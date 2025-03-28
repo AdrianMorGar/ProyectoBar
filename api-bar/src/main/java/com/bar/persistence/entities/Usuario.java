@@ -37,8 +37,11 @@ public class Usuario {
 
     @Enumerated(EnumType.STRING)
     private Rol rol;
+    
+    private Boolean habilitado;
 
     @OneToMany(mappedBy = "usuario")
     @JsonIgnore
     private List<Pedido> pedidos;
+
 }

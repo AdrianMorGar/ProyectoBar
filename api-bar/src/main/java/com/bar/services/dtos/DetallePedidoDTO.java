@@ -7,9 +7,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class DetallePedidoOutputDTO {
+public class DetallePedidoDTO {
     private Integer id;
+    private Integer pedidoId;
+    private Integer platoId;
     private Integer cantidad;
-    private Double precioUnitario;
-    private String plato;
 }

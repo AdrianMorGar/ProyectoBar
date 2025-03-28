@@ -24,11 +24,11 @@ public class DetallePedido {
     private Integer id;
 
     @ManyToOne
-	@JoinColumn(name = "pedido_id", referencedColumnName = "id", insertable = false, updatable = false)
+	@JoinColumn(name = "pedido_id", referencedColumnName = "id")
     private Pedido pedido;
 
     @ManyToOne
-	@JoinColumn(name = "plato_id", referencedColumnName = "id", insertable = false, updatable = false)
+	@JoinColumn(name = "plato_id", referencedColumnName = "id")
     private Plato plato;
 
     @Column(nullable = false)

@@ -1,27 +1,34 @@
 package com.bar.services.mappers;
 
+import com.bar.persistence.entities.DetallePedido;
+import com.bar.services.dtos.DetallePedidoDTO;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bar.persistence.entities.DetallePedido;
-import com.bar.services.dtos.DetallePedidoOutputDTO;
-
 public class DetallePedidoMapper {
 
-    public static DetallePedidoOutputDTO toDto(DetallePedido detalle) {
-        DetallePedidoOutputDTO dto = new DetallePedidoOutputDTO();
+    public static DetallePedidoDTO toDto(DetallePedido detalle) {
+        DetallePedidoDTO dto = new DetallePedidoDTO();
         dto.setId(detalle.getId());
+        dto.setPedidoId(detalle.getPedido().getId());
+        dto.setPlatoId(detalle.getPlato().getId());
         dto.setCantidad(detalle.getCantidad());
-        dto.setPrecioUnitario(detalle.getPlato().getPrecio());
-        dto.setPlato(detalle.getPlato().getNombrePlato()); // Atributo adicional útil
         return dto;
     }
 
-    public static List<DetallePedidoOutputDTO> toDtos(List<DetallePedido> detalles) {
-        List<DetallePedidoOutputDTO> detalleDTOs = new ArrayList<>();
-        for (DetallePedido d : detalles) {
-            detalleDTOs.add(toDto(d));
+    public static List<DetallePedidoDTO> toDtos(List<DetallePedido> detalles) {
+        List<DetallePedidoDTO> detalleDTOs = new ArrayList<>();
+        for (DetallePedido detalle : detalles) {
+            detalleDTOs.add(toDto(detalle));
         }
         return detalleDTOs;
+    }
+
+    public static DetallePedido toEntity(DetallePedidoDTO dto) {
+        DetallePedido detalle = new DetallePedido();
+        detalle.setId(dto.getId());
+        detalle.setCantidad(dto.getCantidad());
+        return detalle;
     }
 }

@@ -25,7 +25,7 @@ public class Tipo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "nombre_tipo", columnDefinition = "VARCHAR(255)", nullable = false, unique = true)
+    @Column(name = "nombre_tipo", columnDefinition = "VARCHAR(255)", nullable = false)
     private String nombreTipo;
 
     @OneToMany(mappedBy = "tipo")

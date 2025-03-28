@@ -30,7 +30,7 @@ public class Plato {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "nombre_plato", length = 255, nullable = false)
+    @Column(name = "nombre_plato", length = 255, nullable = false, unique = true)
     private String nombrePlato;
 
     private String descripcion;
@@ -52,6 +52,6 @@ public class Plato {
     private List<DetallePedido> detalles;
     
     @ManyToOne
-	@JoinColumn(name = "tipo_id", referencedColumnName = "id", insertable = false, updatable = false)
+	@JoinColumn(name = "tipo_id", referencedColumnName = "id")
     private Tipo tipo;
 }

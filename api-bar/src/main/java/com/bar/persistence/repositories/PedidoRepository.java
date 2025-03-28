@@ -9,4 +9,8 @@ import com.bar.persistence.entities.enums.EstadoPedido;
 
 public interface PedidoRepository extends JpaRepository<Pedido, Integer> {
     List<Pedido> findByMesaAndEstado(Integer mesa, EstadoPedido estado);
+
+	List<Pedido> findByMesa(Integer mesa);
+
+	List<Pedido> findByEstado(EstadoPedido estado);
 }

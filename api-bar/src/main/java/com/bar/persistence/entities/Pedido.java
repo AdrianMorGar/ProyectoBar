@@ -47,6 +47,6 @@ public class Pedido {
     private List<DetallePedido> detalles;
     
     @ManyToOne
-	@JoinColumn(name = "usuario_id", referencedColumnName = "id", insertable = false, updatable = false)
+	@JoinColumn(name = "usuario_id", referencedColumnName = "id")
     private Usuario usuario;
 }

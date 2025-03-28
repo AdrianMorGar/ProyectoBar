@@ -1,23 +1,22 @@
 package com.bar.services.dtos;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 import com.bar.persistence.entities.enums.EstadoPedido;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 public class PedidoDTO {
     private Integer id;
-    private LocalDateTime fecha;
-    private Double total;
-    private EstadoPedido estado;
+    private String nombreCliente;
     private Integer mesa;
-    private String cliente;
+    private LocalDateTime fecha;
+    private EstadoPedido estado;
+    private Double total;
     private List<DetallePedidoOutputDTO> detalles;
 }

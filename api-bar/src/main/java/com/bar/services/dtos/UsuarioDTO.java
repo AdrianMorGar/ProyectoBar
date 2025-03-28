@@ -1,5 +1,6 @@
 package com.bar.services.dtos;
 
+import com.bar.persistence.entities.enums.Rol;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -7,9 +8,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class DetallePedidoOutputDTO {
+public class UsuarioDTO {
     private Integer id;
-    private Integer cantidad;
-    private Double precioUnitario;
-    private String plato;
+    private String nombre;
+    private Rol rol;
+    private Boolean habilitado;
 }
