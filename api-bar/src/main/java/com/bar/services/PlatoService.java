@@ -1,13 +1,12 @@
 package com.bar.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.bar.persistence.entities.Plato;
 import com.bar.persistence.entities.enums.Categoria;
 import com.bar.persistence.repositories.PlatoRepository;
 import com.bar.services.dtos.PlatoDTO;
 import com.bar.services.mappers.PlatoMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -26,16 +25,16 @@ public class PlatoService {
         }
         return PlatoMapper.toDtos(platos);
     }
-    
+
     public PlatoDTO findById(Integer id) {
-        Plato plato = platoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("El plato con ID " + id + " no existe"));
-        return PlatoMapper.toDto(plato);
+        Plato plato = platoRepository.findById(id).orElse(null);
+        return plato != null ? PlatoMapper.toDto(plato) : null;
     }
 
     public PlatoDTO create(PlatoDTO platoDTO) {
         Plato plato = PlatoMapper.toEntity(platoDTO);
         plato.setHabilitado(true);
+        plato.setDisponible(true);
         Plato saved = platoRepository.save(plato);
         return PlatoMapper.toDto(saved);
     }
@@ -47,11 +46,24 @@ public class PlatoService {
         return PlatoMapper.toDto(updated);
     }
 
-    public void togglePlato(Integer id) {
-        Plato plato = platoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Plato no encontrado"));
-        plato.setHabilitado(!plato.getHabilitado());
-        platoRepository.save(plato);
+    public boolean togglePlato(Integer id) {
+        Plato plato = platoRepository.findById(id).orElse(null);
+        if (plato != null) {
+            plato.setHabilitado(!plato.getHabilitado());
+            platoRepository.save(plato);
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean toggleDisponible(Integer id) {
+        Plato plato = platoRepository.findById(id).orElse(null);
+        if (plato != null) {
+            plato.setDisponible(!plato.getDisponible());
+            platoRepository.save(plato);
+            return true;
+        }
+        return false;
     }
 
     public List<PlatoDTO> buscarPorNombre(String nombre) {

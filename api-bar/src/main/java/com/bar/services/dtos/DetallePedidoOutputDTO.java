@@ -1,5 +1,8 @@
 package com.bar.services.dtos;
 
+import com.bar.persistence.entities.enums.EstadoPedido;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,4 +15,8 @@ public class DetallePedidoOutputDTO {
     private Integer cantidad;
     private Double precioUnitario;
     private String plato;
+    private EstadoPedido estado;
+    @JsonIgnore 
+    private Integer mesa;
+
 }

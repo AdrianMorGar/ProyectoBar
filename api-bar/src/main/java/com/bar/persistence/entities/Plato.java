@@ -30,7 +30,7 @@ public class Plato {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "nombre_plato", length = 255, nullable = false, unique = true)
+    @Column(name = "nombre_plato", length = 255, nullable = false)
     private String nombrePlato;
 
     private String descripcion;

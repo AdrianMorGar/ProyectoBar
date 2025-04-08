@@ -1,8 +1,12 @@
 package com.bar.persistence.entities;
 
 
+import com.bar.persistence.entities.enums.EstadoPedido;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -23,14 +27,17 @@ public class DetallePedido {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne
-	@JoinColumn(name = "pedido_id", referencedColumnName = "id")
-    private Pedido pedido;
-
-    @ManyToOne
-	@JoinColumn(name = "plato_id", referencedColumnName = "id")
-    private Plato plato;
-
     @Column(nullable = false)
     private Integer cantidad;
+    
+    @Enumerated(EnumType.STRING)
+    private EstadoPedido estado;
+    
+    @ManyToOne
+	@JoinColumn(name = "pedido_id", referencedColumnName = "id")
+	private Pedido pedido;
+
+	@ManyToOne
+	@JoinColumn(name = "plato_id", referencedColumnName = "id")
+	private Plato plato;
 }

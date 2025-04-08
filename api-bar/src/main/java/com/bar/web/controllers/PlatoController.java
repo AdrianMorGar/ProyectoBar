@@ -22,10 +22,13 @@ public class PlatoController {
         List<PlatoDTO> platos = platoService.listarPlatosActivos(categoria);
         return ResponseEntity.ok(platos);
     }
-    
+
     @GetMapping("/{id}")
     public ResponseEntity<PlatoDTO> findById(@PathVariable Integer id) {
         PlatoDTO platoDTO = platoService.findById(id);
+        if (platoDTO == null) {
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(platoDTO);
     }
 
@@ -38,12 +41,27 @@ public class PlatoController {
     @PutMapping("/{id}")
     public ResponseEntity<PlatoDTO> update(@PathVariable Integer id, @RequestBody PlatoDTO platoDTO) {
         PlatoDTO platoActualizado = platoService.update(id, platoDTO);
+        if (platoActualizado == null) {
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(platoActualizado);
     }
 
-    @PatchMapping("/{id}/toggle")
+    @PatchMapping("/{id}/toggle/habilitado")
     public ResponseEntity<Void> togglePlato(@PathVariable Integer id) {
-        platoService.togglePlato(id);
+        boolean result = platoService.togglePlato(id);
+        if (!result) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().build();
+    }
+    
+    @PatchMapping("/{id}/toggle/Disponible")
+    public ResponseEntity<Void> toggleDisponible(@PathVariable Integer id) {
+        boolean result = platoService.toggleDisponible(id);
+        if (!result) {
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok().build();
     }
 
