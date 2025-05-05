@@ -2,6 +2,7 @@ package com.bar.web.controllers;
 
 import com.bar.services.PedidoService;
 import com.bar.services.dtos.PedidoDTO;
+import com.bar.services.dtos.PedidoVentaDTO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,7 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/pedidos")
 public class PedidoController {
@@ -63,22 +66,31 @@ public class PedidoController {
         Double total = pedidoService.calcularTotalPlatosServidos(id);
         return ResponseEntity.ok(total);
     }
-
-    @GetMapping("/ventas/dia")
-    public ResponseEntity<Double> calcularVentasDia() {
-        Double total = pedidoService.calcularVentasDia();
-        return ResponseEntity.ok(total);
+    
+    @GetMapping("/ventas/detalles/{year}/{month}/{day}")
+    public ResponseEntity<List<PedidoVentaDTO>> obtenerDetallesVentasDiarias(@PathVariable int year, @PathVariable int month, @PathVariable int day) {
+    	if (day < 1 || day > 31 || month < 1 || month > 12 || year < 0) {
+            return ResponseEntity.badRequest().body(null);
+        }
+        List<PedidoVentaDTO> detalles = pedidoService.obtenerDetallesVentasDiarias(year, month, day);
+        return ResponseEntity.ok(detalles);
     }
 
-    @GetMapping("/ventas/mes")
-    public ResponseEntity<Double> calcularVentasMes() {
-        Double total = pedidoService.calcularVentasMes();
-        return ResponseEntity.ok(total);
+    @GetMapping("/ventas/mes/{year}/{month}")
+    public ResponseEntity<Map<Integer, Double>> calcularVentasPorDia(@PathVariable int year, @PathVariable int month) {
+        if (month < 1 || month > 12 || year < 0) {
+            return ResponseEntity.badRequest().body(null);
+        }
+        Map<Integer, Double> ventasPorDia = pedidoService.calcularVentasDia(year, month);
+        return ResponseEntity.ok(ventasPorDia);
     }
 
-    @GetMapping("/ventas/anio")
-    public ResponseEntity<Double> calcularVentasAnio() {
-        Double total = pedidoService.calcularVentasAnio();
-        return ResponseEntity.ok(total);
+    @GetMapping("/ventas/anio/{year}")
+    public ResponseEntity<Map<Integer, Double>> calcularVentasPorMes(@PathVariable int year) {
+    	if (year < 0) {
+            return ResponseEntity.badRequest().body(null);
+        }
+        Map<Integer, Double> ventasPorMes = pedidoService.calcularVentasMes(year);
+        return ResponseEntity.ok(ventasPorMes);
     }
 }
