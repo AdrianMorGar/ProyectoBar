@@ -1,0 +1,321 @@
+.container {
+    padding: 20px;
+    margin: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .title {
+    margin-bottom: 20px;
+    font-size: 1.5em;
+    text-align: center;
+  }
+  
+  .formGroup {
+    margin-bottom: 15px;
+  }
+  
+  .formGroup label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .formGroup input,
+  .formGroup select {
+    padding: 5px;
+    width: 100%;
+    max-width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .submitButton {
+    padding: 8px 12px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .error {
+    color: red;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .noDataMessage {
+    text-align: center;
+    color: #888;
+  }
+  
+  .actions {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+  }
+  
+  .actionButton {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    color: #fff;
+    text-align: center;
+  }
+  
+  .available {
+    background-color: #4caf50;
+  }
+  
+  .notAvailable {
+    background-color: #f44336;
+  }
+  
+  .delete {
+    background-color: #f44336;
+  }
+  
+  .update {
+    background-color: #2196f3;
+    text-decoration: none;
+  }
+  
+  .cancelButton {
+    background-color: #dc3545;
+  }
+  
+  /* Dish Specific Styles */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .searchInput {
+    padding: 5px;
+    width: 200px;
+  }
+  
+  .addButton {
+    text-decoration: none;
+    color: blue;
+  }
+  
+  .typeHeader {
+    margin-top: 20px;
+    font-size: 1.2em;
+    font-weight: bold;
+  }
+  
+  .dishCard {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .dishImage {
+    width: 100px;
+    height: 100px;
+    margin-right: 20px;
+  }
+  
+  .dishDetails {
+    flex: 1;
+  }
+  
+  .dishName {
+    font-size: 1.1em;
+    margin: 0;
+  }
+  
+  .dishDescription {
+    margin: 5px 0;
+    color: #555;
+  }
+  
+  .dishPrice {
+    font-weight: bold;
+    margin: 5px 0;
+  }
+  
+  .previewImage {
+    width: 100px;
+    height: auto;
+    margin-top: 10px;
+  }
+  
+  .typeManager button {
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .typeList {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .typeList li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 5px;
+  }
+  
+  .typeList button {
+    padding: 3px 8px;
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  /* Sales Calendar Styles */
+  .yearButtons,
+  .monthButtons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .yearButton,
+  .monthButton {
+    padding: 8px 12px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .monthList,
+  .dayList,
+  .salesList {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .monthItem,
+  .dayItem,
+  .salesItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 5px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  
+  .monthName,
+  .dayName,
+  .salesTitle {
+    font-weight: bold;
+    color: #000;
+  }
+  
+  .monthDetails,
+  .dayDetails {
+    display: flex;
+    align-items: center;
+    color: #000;
+    gap: 10px;
+  }
+
+  .detailItem {
+    display: flex;
+    justify-content: space-between; /* Alinea los elementos a ambos lados */
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #333; /* Línea separadora entre elementos */
+  }
+
+  .detailItem:last-child {
+    border-bottom: none; /* Elimina la línea del último elemento */
+  }
+
+  .detailItem span {
+    color: #000;
+  }
+  
+  .detailsButton {
+    padding: 5px 10px;
+    background-color: #28a745;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+  }
+  
+  .total {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  
+  
+  /* Worker List Styles */
+  .workerList {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .workerItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+
+  .addButton {
+    display: block;
+    margin: 10px auto;
+    padding: 8px 12px;
+    background-color: #007bff;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    text-align: center;
+    width: fit-content;
+  }
+
+  .actions {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+    gap: 5px;
+  }
+  
+  .workerName {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .disableButton {
+    background-color: #dc3545;
+  }
+  
+  .enableButton {
+    background-color: #28a745;
+  }
+  
+  .updateButton {
+    background-color: #ffc107;
+    color: #000;
+  }
