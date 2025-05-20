@@ -1,321 +1,471 @@
+/* --- THEME VARIABLES ---
+ * Based on css.txt, prioritizing dark theme values directly
+ * while keeping application-specific colors for buttons etc.
+ */
+ :root {
+  /* Core Theme (Dark Mode First - as requested) */
+  --background-body: #202b38;        /* Dark body background */
+  --background: #161f27;             /* Dark component background */
+  --background-alt: #1a242f;         /* Darker alternative component background */
+  --selection: #1c76c5;
+  --text-main: #dbdbdb;              /* Main text color (light gray) */
+  --text-bright: #ffffff;            /* Bright text color (white) */
+  --text-muted: #a9b1ba;             /* Muted text color (lighter gray) */
+  --links: #41adff;                  /* Link color for dark theme */
+  --focus: rgba(65, 173, 255, 0.7); /* Adjusted focus to be more visible on dark */
+  --border: #526980;                 /* Border color for dark theme */
+  --code-bg: var(--background);
+  --code-text: #ffbe85;
+  --animation-duration: 0.1s;
+  --button-base: #0c151c;            /* Base for generic/secondary buttons */
+  --button-hover: #040a0f;           /* Hover for generic/secondary buttons */
+  --scrollbar-thumb: var(--button-hover);
+  --scrollbar-thumb-hover: rgb(0, 0, 0);
+  --form-placeholder: #a9a9a9;
+  --form-text: #ffffff;               /* Text inside forms (white) */
+  --variable: #d941e2;
+  --highlight: #efdb43;
+  --select-arrow: url("data:image/svg+xml;charset=utf-8,%3C?xml version='1.0' encoding='utf-8'?%3E %3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' height='62.5' width='116.9' fill='%23efefef'%3E %3Cpath d='M115.3,1.6 C113.7,0 111.1,0 109.5,1.6 L58.5,52.7 L7.4,1.6 C5.8,0 3.2,0 1.6,1.6 C0,3.2 0,5.8 1.6,7.4 L55.5,61.3 C56.3,62.1 57.3,62.5 58.4,62.5 C59.4,62.5 60.5,62.1 61.3,61.3 L115.2,7.4 C116.9,5.8 116.9,3.2 115.3,1.6Z'/%3E %3C/svg%3E");
+
+  /* Application Specific Theme Colors (kept from original request for branding) */
+  --primary-color: #007bff;
+  --primary-color-darker: #0056b3;
+  --primary-color-lighter: #58a6ff; /* Adjusted for better visibility on dark */
+  --success-color: #28a745;
+  --success-color-darker: #1e7e34;
+  --danger-color: #dc3545;
+  --danger-color-darker: #c82333;
+  --warning-color: #ffc107;
+  --warning-color-darker: #e0a800;
+  --info-color: #17a2b8;
+  --info-color-darker: #117a8b;
+  --purple-color: #8a63d2; /* Lightened purple for dark theme */
+  --purple-color-darker: #6f42c1;
+
+  /* Text colors for themed buttons */
+  --light-color-text-on-themed-button: #ffffff; /* White text for most colored buttons */
+  --dark-color-text-on-themed-button: #161f27;  /* Dark text for light buttons like warning */
+
+  /* General UI */
+  --font-family-sans-serif: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif;
+  --base-font-size: 16px;
+  --base-line-height: 1.65;
+  --border-radius-base: 0.3rem;
+  --box-shadow-base: 0 0.5rem 1.2rem rgba(0, 0, 0, 0.25);
+  --box-shadow-sm-base: 0 0.125rem 0.3rem rgba(0, 0, 0, 0.2);
+  --transition-base: all var(--animation-duration) ease-in-out;
+}
+
+/* --- HTML & Body Base (for Sticky Footer) --- */
+html {
+  scrollbar-color: var(--scrollbar-thumb) var(--background-body);
+  scrollbar-width: thin;
+  font-size: var(--base-font-size);
+  height: 100%; /* For sticky footer */
+}
+
+body {
+  font-family: var(--font-family-sans-serif);
+  line-height: var(--base-line-height);
+  margin: 0;
+  padding: 0;
+  word-wrap: break-word;
+  color: var(--text-main);
+  background-color: var(--background-body);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  display: flex; /* For sticky footer */
+  flex-direction: column; /* For sticky footer */
+  min-height: 100%; /* For sticky footer (fallback) */
+  min-height: 100vh; /* For sticky footer */
+}
+
+/* --- Main Page Container (Full Width & Sticky Footer) --- */
 .container {
-    padding: 20px;
-    margin: 20px;
-    font-family: Arial, sans-serif;
-  }
-  
-  .title {
-    margin-bottom: 20px;
-    font-size: 1.5em;
-    text-align: center;
-  }
-  
-  .formGroup {
-    margin-bottom: 15px;
-  }
-  
-  .formGroup label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-  }
-  
-  .formGroup input,
-  .formGroup select {
-    padding: 5px;
-    width: 100%;
-    max-width: 300px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-  
-  .submitButton {
-    padding: 8px 12px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .error {
-    color: red;
-    margin-bottom: 20px;
-    text-align: center;
-  }
-  
-  .noDataMessage {
-    text-align: center;
-    color: #888;
-  }
-  
-  .actions {
-    margin-top: 10px;
-    display: flex;
-    gap: 10px;
-  }
-  
-  .actionButton {
-    padding: 5px 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    color: #fff;
-    text-align: center;
-  }
-  
-  .available {
-    background-color: #4caf50;
-  }
-  
-  .notAvailable {
-    background-color: #f44336;
-  }
-  
-  .delete {
-    background-color: #f44336;
-  }
-  
-  .update {
-    background-color: #2196f3;
-    text-decoration: none;
-  }
-  
-  .cancelButton {
-    background-color: #dc3545;
-  }
-  
-  /* Dish Specific Styles */
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  
-  .searchInput {
-    padding: 5px;
-    width: 200px;
-  }
-  
-  .addButton {
-    text-decoration: none;
-    color: blue;
-  }
-  
-  .typeHeader {
-    margin-top: 20px;
-    font-size: 1.2em;
-    font-weight: bold;
-  }
-  
-  .dishCard {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-  
-  .dishImage {
-    width: 100px;
-    height: 100px;
-    margin-right: 20px;
-  }
-  
-  .dishDetails {
-    flex: 1;
-  }
-  
-  .dishName {
-    font-size: 1.1em;
-    margin: 0;
-  }
-  
-  .dishDescription {
-    margin: 5px 0;
-    color: #555;
-  }
-  
-  .dishPrice {
-    font-weight: bold;
-    margin: 5px 0;
-  }
-  
-  .previewImage {
-    width: 100px;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 2rem 2.5rem; /* Increased padding */
+  box-sizing: border-box;
+  flex-grow: 1; /* For sticky footer - content grows to fill space */
+}
+
+/* --- Typography --- */
+.title, h1, h2, h3, h4, h5, h6 {
+  margin-top: 0;
+  margin-bottom: 1.5rem; /* Increased bottom margin for headings */
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--text-bright);
+}
+
+.title {
+  font-size: 2.4em;
+  text-align: center;
+  color: var(--primary-color);
+  padding-bottom: 1.25rem; /* Increased padding */
+  border-bottom: 2px solid var(--primary-color-lighter);
+  margin-bottom: 3rem; /* Increased margin */
+}
+
+h1 { font-size: 2.1em; }
+h2 { font-size: 1.8em; color: var(--primary-color-lighter); }
+h3 { font-size: 1.5em; }
+h4 { font-size: 1.25em; }
+
+p { margin-top: 0; margin-bottom: 1.1rem; color: var(--text-main); }
+
+a {
+  color: var(--links);
+  text-decoration: none !important; /* Remove underline from all links by default */
+  transition: var(--transition-base);
+}
+a:hover {
+  color: var(--links); /* Keep link color, no underline by default */
+  text-decoration: none !important; /* Ensure no underline on hover either */
+}
+/* Specific underline for non-button links if needed elsewhere, but buttons override this */
+/* a.traditional-link:hover { text-decoration: underline !important; } */
+
+
+strong, b { color: var(--text-bright); font-weight: 600; }
+
+/* --- Form Styles --- */
+.formGroup { margin-bottom: 1.75rem; } /* Increased margin */
+.formGroup label { display: block; margin-bottom: 0.7rem; font-weight: 600; color: var(--text-muted); }
+
+.formGroup input[type="text"],
+.formGroup input[type="password"],
+.formGroup input[type="number"],
+.formGroup input[type="email"],
+.formGroup input[type="file"],
+.formGroup select,
+.formGroup textarea,
+.input-field,
+.searchInput,
+.note-textarea, textarea {
+  display: block;
+  width: 100%;
+  padding: 0.85rem 1.1rem; /* Increased padding */
+  font-size: 1rem;
+  font-family: inherit;
+  color: var(--form-text);
+  background-color: var(--background-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--border-radius-base);
+  transition: var(--transition-base), border-color var(--animation-duration) linear, box-shadow var(--animation-duration) linear;
+  box-sizing: border-box;
+  outline: none;
+  line-height: 1.5; /* Ensure consistent line height with buttons */
+}
+.formGroup input::placeholder,
+.formGroup textarea::placeholder,
+.input-field::placeholder,
+.searchInput::placeholder,
+.note-textarea::placeholder, textarea::placeholder {
+  color: var(--form-placeholder);
+  opacity: 0.8;
+}
+
+.formGroup input:focus,
+.formGroup select:focus,
+.formGroup textarea:focus,
+.input-field:focus,
+.searchInput:focus,
+.note-textarea:focus, textarea:focus {
+  border-color: var(--links);
+  box-shadow: 0 0 0 3px var(--focus);
+  background-color: var(--background);
+}
+
+select {
+  background: var(--background-alt) var(--select-arrow) calc(100% - 15px) 50% / 12px no-repeat;
+  padding-right: 40px !important;
+}
+select::-ms-expand { display: none; }
+select[multiple] { padding-right: 10px !important; background-image: none; }
+
+/* --- Button Styles (General & Themed) --- */
+.btn,
+button, /* Generic button tag styling */
+input[type="button"], input[type="submit"], input[type="reset"], /* Input buttons */
+.submitButton, .actionButton, .yearButton, .monthButton, .detailsButton,
+.cancelButton, .addButton, .typeManager button, .typeList button,
+.place-order-button, .save-note-button, .edit-note-button,
+.remove-dish-button, .remove-button, .table-button, .quantity-button,
+.remove-table-button {
+  display: inline-block;
+  font-weight: 600;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none;
+  border: 1px solid transparent;
+  padding: 0.65rem 1.2rem; /* Standardized button padding */
+  font-size: 0.95rem;      /* Standardized button font size */
+  line-height: 1.5;        /* Match input line height */
+  border-radius: var(--border-radius-base);
+  transition: var(--transition-base), transform 0.05s ease-out;
+  text-decoration: none !important; /* Crucial for Link components */
+  outline: none;
+  margin: 0.25rem; /* Universal small margin around buttons */
+}
+
+/* Remove hover text color change for buttons that are links */
+a.btn, a.submitButton, a.actionButton, a.yearButton, a.monthButton,
+a.detailsButton, a.cancelButton, a.addButton, a.update, a.type-button,
+a.table-button {
+    text-decoration: none !important;
+}
+a.btn:hover, a.submitButton:hover, a.actionButton:hover, a.yearButton:hover,
+a.monthButton:hover, a.detailsButton:hover, a.cancelButton:hover,
+a.addButton:hover, a.update:hover, a.type-button:hover, a.table-button:hover {
+    text-decoration: none !important;
+    /* Color is inherited from button's specific class, no change on hover */
+}
+
+
+.btn:focus, button:focus, input[type="button"]:focus, input[type="submit"]:focus,
+input[type="reset"]:focus, .submitButton:focus, .actionButton:focus, .yearButton:focus,
+.monthButton:focus, .detailsButton:focus, .cancelButton:focus, .addButton:focus,
+.typeManager button:focus, .typeList button:focus, .place-order-button:focus,
+.save-note-button:focus, .edit-note-button:focus, .remove-dish-button:focus,
+.remove-button:focus, .table-button:focus, .quantity-button:focus,
+.remove-table-button:focus {
+  box-shadow: 0 0 0 3px var(--focus);
+}
+
+.btn:active, button:active, input[type="button"]:active, input[type="submit"]:active,
+input[type="reset"]:active, .submitButton:active, .actionButton:active, .yearButton:active,
+.monthButton:active, .detailsButton:active, .cancelButton:active, .addButton:active,
+.typeManager button:active, .typeList button:active, .place-order-button:active,
+.save-note-button:active, .edit-note-button:active, .remove-dish-button:active,
+.remove-button:active, .table-button:active, .quantity-button:active,
+.remove-table-button:active {
+  transform: translateY(2px);
+}
+
+/* Specific Button Margins (Increased) */
+.actions { margin-top: 1.5rem; gap: 1rem; } /* Increased gap in .actions */
+.header .addButton { margin-left: 1.5rem; } /* More space next to search */
+.button-group { gap: 1.25rem; margin-bottom: 2.5rem; } /* Increased gap & margin */
+.typeManager button { margin: 0.5rem; } /* Add margin around type manager buttons */
+.typeList button { margin-left: 0.5rem; }
+.edit-order .botones { margin-top: 1.5rem; gap: 1rem; }
+
+/* Button/Filter Size Adjustment in .header */
+.header .searchInput {
+    padding-top: 0.65rem;    /* Match button vertical padding */
+    padding-bottom: 0.65rem; /* Match button vertical padding */
     height: auto;
-    margin-top: 10px;
-  }
-  
-  .typeManager button {
-    padding: 5px 10px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .typeList {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .typeList li {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 5px;
-  }
-  
-  .typeList button {
-    padding: 3px 8px;
-    background-color: #dc3545;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  /* Sales Calendar Styles */
-  .yearButtons,
-  .monthButtons {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-  }
-  
-  .yearButton,
-  .monthButton {
-    padding: 8px 12px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .monthList,
-  .dayList,
-  .salesList {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .monthItem,
-  .dayItem,
-  .salesItem {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    margin-bottom: 5px;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-  }
-  
-  .monthName,
-  .dayName,
-  .salesTitle {
-    font-weight: bold;
-    color: #000;
-  }
-  
-  .monthDetails,
-  .dayDetails {
-    display: flex;
-    align-items: center;
-    color: #000;
-    gap: 10px;
-  }
+    max-width: 280px; /* Slightly less max-width */
+    font-size: 0.95rem; /* Consistent font size */
+}
+.header .addButton {
+    padding-top: 0.65rem;
+    padding-bottom: 0.65rem;
+    font-size: 0.95rem; /* Match searchInput font-size */
+}
 
-  .detailItem {
-    display: flex;
-    justify-content: space-between; /* Alinea los elementos a ambos lados */
-    align-items: center;
-    padding: 8px 0;
-    border-bottom: 1px solid #333; /* Línea separadora entre elementos */
-  }
 
-  .detailItem:last-child {
-    border-bottom: none; /* Elimina la línea del último elemento */
-  }
+/* Default Themed Button (Primary) */
+.btn, .submitButton, .actionButton, .yearButton, .monthButton, .detailsButton, .addButton, .typeManager button, .place-order-button, .save-note-button, .table-button, .quantity-button, .type-button.active {
+  color: var(--light-color-text-on-themed-button) !important; /* Important to override Link color */
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+.btn:hover, .submitButton:hover, .actionButton:hover, .yearButton:hover, .monthButton:hover, .detailsButton:hover, .addButton:hover, .typeManager button:hover, .place-order-button:hover, .save-note-button:hover, .table-button:hover, .quantity-button:hover, .type-button.active:hover {
+  background-color: var(--primary-color-darker);
+  border-color: var(--primary-color-darker);
+  color: var(--light-color-text-on-themed-button) !important;
+}
 
-  .detailItem span {
-    color: #000;
-  }
-  
-  .detailsButton {
-    padding: 5px 10px;
-    background-color: #28a745;
-    color: #fff;
-    text-decoration: none;
-    border-radius: 5px;
-  }
-  
-  .total {
-    margin-top: 20px;
-    text-align: center;
-    font-size: 18px;
-    font-weight: bold;
-  }
+/* Success Buttons */
+.btn-success, .available, .enableButton, .dish-details-container .add-button {
+  color: var(--light-color-text-on-themed-button) !important;
+  background-color: var(--success-color);
+  border-color: var(--success-color);
+}
+.btn-success:hover, .available:hover, .enableButton:hover, .dish-details-container .add-button:hover {
+  background-color: var(--success-color-darker);
+  border-color: var(--success-color-darker);
+  color: var(--light-color-text-on-themed-button) !important;
+}
 
-  
-  
-  /* Worker List Styles */
-  .workerList {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .workerItem {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px;
-    margin-bottom: 10px;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-  }
+/* Danger Buttons */
+.btn-danger, .notAvailable, .delete, .remove-button, .remove-dish-button, .remove-table-button, .disableButton, .typeList button {
+  color: var(--light-color-text-on-themed-button) !important;
+  background-color: var(--danger-color);
+  border-color: var(--danger-color);
+}
+.btn-danger:hover, .notAvailable:hover, .delete:hover, .remove-button:hover, .remove-dish-button:hover, .remove-table-button:hover, .disableButton:hover, .typeList button:hover {
+  background-color: var(--danger-color-darker);
+  border-color: var(--danger-color-darker);
+  color: var(--light-color-text-on-themed-button) !important;
+}
 
-  .addButton {
-    display: block;
-    margin: 10px auto;
-    padding: 8px 12px;
-    background-color: #007bff;
-    color: #fff;
-    text-decoration: none;
-    border-radius: 5px;
-    text-align: center;
-    width: fit-content;
-  }
+/* Warning/Cancel Buttons */
+.btn-warning, .updateButton, .cancelButton, .add-order-bar .cancel-button, .add-order-waiter .cancel-button {
+  color: var(--dark-color-text-on-themed-button) !important;
+  background-color: var(--warning-color);
+  border-color: var(--warning-color);
+}
+.btn-warning:hover, .updateButton:hover, .cancelButton:hover, .add-order-bar .cancel-button:hover, .add-order-waiter .cancel-button:hover {
+  background-color: var(--warning-color-darker);
+  border-color: var(--warning-color-darker);
+  color: var(--dark-color-text-on-themed-button) !important;
+}
 
-  .actions {
-    display: flex;
-    flex-direction: column;
-    margin-top: 10px;
-    gap: 5px;
-  }
-  
-  .workerName {
-    font-size: 16px;
-    font-weight: bold;
-    color: #333;
-  }
-  
-  .disableButton {
-    background-color: #dc3545;
-  }
-  
-  .enableButton {
-    background-color: #28a745;
-  }
-  
-  .updateButton {
-    background-color: #ffc107;
-    color: #000;
-  }
+/* Info Buttons */
+.btn-info, .update, .edit-note-button {
+  color: var(--light-color-text-on-themed-button) !important;
+  background-color: var(--info-color);
+  border-color: var(--info-color);
+}
+.btn-info:hover, .update:hover, .edit-note-button:hover {
+  background-color: var(--info-color-darker);
+  border-color: var(--info-color-darker);
+  color: var(--light-color-text-on-themed-button) !important;
+}
+
+/* Purple Buttons */
+.btn-purple {
+  color: var(--light-color-text-on-themed-button) !important;
+  background-color: var(--purple-color);
+  border-color: var(--purple-color);
+}
+.btn-purple:hover {
+  background-color: var(--purple-color-darker);
+  border-color: var(--purple-color-darker);
+  color: var(--light-color-text-on-themed-button) !important;
+}
+
+/* Secondary/Muted Buttons */
+.btn-secondary, .dish-list-container .type-button {
+  color: var(--text-main) !important;
+  background-color: var(--button-base);
+  border-color: var(--border);
+}
+.btn-secondary:hover, .dish-list-container .type-button:hover {
+  background-color: var(--button-hover);
+  border-color: var(--text-muted);
+  color: var(--text-bright) !important;
+}
+
+
+/* --- Message & Feedback Styles --- */
+.error, .error-message { color: var(--danger-color); background-color: rgba(220, 53, 69, 0.15); border: 1px solid var(--danger-color); padding: 0.8rem 1.25rem; margin-bottom: 1.25rem; border-radius: var(--border-radius-base); text-align: center; }
+.noDataMessage, .no-types-message, .no-dishes-message, .no-orders-message, .no-tables-message, .loading-message { text-align: center; color: var(--text-muted); font-size: 1.15em; padding: 2.5rem; border: 2px dashed var(--border); border-radius: var(--border-radius-base); margin-top: 2rem; background-color: var(--background-alt); }
+
+/* --- Layout & Card Styles --- */
+.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--border); }
+.header h1, .header h2 { margin-bottom: 0; }
+
+/* --- Content Cards --- */
+.dishCard, .type-card, .workerItem, .monthItem, .dayItem, .salesItem, .dish-item, .detalle-card, .order-group, .dish-details-container, .edit-order, .add-order-bar, .add-order-waiter, .typeManager, .table-selection { background-color: var(--background); border: 1px solid var(--border); border-radius: var(--border-radius-base); padding: 1.75rem; margin-bottom: 2rem; box-shadow: var(--box-shadow-sm-base); transition: var(--transition-base); } /* Increased padding and margin */
+.dishCard:hover, .type-card:hover, .workerItem:hover, .monthItem:hover, .dayItem:hover, .salesItem:hover, .dish-item:hover, .detalle-card:hover { transform: translateY(-4px); box-shadow: var(--box-shadow-base); border-color: var(--links); }
+.order-group, .dish-details-container, .edit-order { box-shadow: var(--box-shadow-base); }
+.order-group:hover, .dish-details-container:hover, .edit-order:hover { transform: none; border-color: var(--border); }
+
+/* --- Dish Specific Styles --- */
+.typeHeader { margin-top: 2.5rem; margin-bottom: 1.25rem; font-size: 1.7em; font-weight: 700; color: var(--primary-color-lighter); border-bottom: 1px solid var(--primary-color); padding-bottom: 0.6rem; }
+.dishCard { display: flex; align-items: center; }
+.dishImage, .type-image, .dish-details-container .dish-image { width: 110px; height: 110px; object-fit: cover; border-radius: var(--border-radius-base); margin-right: 1.75rem; border: 2px solid var(--border); } /* Increased margin */
+.dish-details-container .dish-image { width: 100%; max-width: 300px; height: auto; max-height: 300px; margin: 0 auto 2rem auto; } /* Increased margin */
+.dishDetails { flex: 1; }
+.dishName, .type-name, .workerName, .monthName, .dayName, .salesTitle, .order-item strong, .detalle-card h3, .order-group h3 { font-size: 1.2em; margin-bottom: 0.6rem; font-weight: 600; color: var(--text-bright) !important; } /* Ensure important text is bright */
+.dish-item strong { color: var(--primary-color-lighter); }
+.detalle-card h3 { color: var(--primary-color-lighter); }
+.order-group h3 { font-size: 1.7em; margin-bottom: 1.25rem; } /* Increased size & margin */
+.dishDescription { margin: 0.5rem 0; color: var(--text-muted); font-size: 0.95em; }
+.dishPrice, .dish-list-container .dish-price { font-weight: 700; margin: 0.5rem 0; color: var(--success-color); font-size: 1.15em; }
+.previewImage { width: 150px; height: auto; margin-top: 1rem; border-radius: var(--border-radius-base); border: 1px solid var(--border); }
+.typeManager { background-color: var(--background-alt); }
+.typeList { list-style: none; padding: 0; margin-top: 1rem; }
+.typeList li { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 0.7rem 0; border-bottom: 1px solid var(--border); color: var(--text-main); }
+.typeList li:last-child { border-bottom: none; }
+
+/* --- Sales Calendar & Details --- */
+.monthDetails, .dayDetails { display: flex; align-items: center; gap: 1rem; color: var(--text-main); }
+.detailItem { display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 0; border-bottom: 1px solid var(--border); }
+.detailItem:last-child { border-bottom: none; }
+.detailItem span { color: var(--text-main); }
+.total { margin-top: 2.5rem; text-align: right; font-size: 1.6em; font-weight: 700; padding: 1.25rem; background-color: var(--background-alt); color: var(--primary-color-lighter); border-radius: var(--border-radius-base); border-top: 2px solid var(--primary-color); }
+
+/* --- AddOrderBar / AddOrderWaiter --- */
+.table-selection { background-color: var(--background-alt); margin-bottom: 2.5rem; } /* Increased margin */
+.table-selection h2 { margin-bottom: 1.25rem; font-size: 1.5em; color: var(--text-bright); } /* Increased margin */
+.note { margin-top: 0.8rem; font-style: italic; color: var(--text-muted); background-color: var(--background-alt); padding: 0.8rem; border-left: 4px solid var(--info-color); border-radius: 0 var(--border-radius-base) var(--border-radius-base) 0; }
+.place-order-button { width: 100%; padding: 0.9rem 1.5rem; font-size: 1.15em; margin-top: 2rem; } /* Increased margin */
+
+/* --- Bar.css / Grids --- */
+.type-grid, .dishes-grid, .tables-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.75rem; margin-bottom: 2.5rem; } /* Increased gap & margin */
+.tables-list { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+.type-card, .bar-dish-container .dish-card, .dish-list-container .dish-card { text-align: center; cursor: pointer; padding: 0; overflow: hidden; }
+.type-card .type-image, .bar-dish-container .dish-card .dish-image, .dish-list-container .dish-card .dish-image { width: 100%; height: 160px; object-fit: cover; border-radius: var(--border-radius-base) var(--border-radius-base) 0 0; margin: 0; border: none; border-bottom: 1px solid var(--border); }
+.type-card .type-name, .bar-dish-container .dish-card .dish-name, .dish-list-container .dish-card .dish-name { margin: 0; padding: 0.8rem 0.5rem; font-size: 1.1em; color: var(--text-bright); background-color: var(--background); }
+
+/* --- KitchenBoard / BebidaBoard --- */
+.bebida-board h2, .kitchen-board h2 { text-align: center; margin-bottom: 2.5rem; font-size: 2em; color: var(--primary-color-lighter); }
+.order-item { cursor: pointer; padding: 1.25rem 1.5rem; margin: 1rem 0; border-radius: var(--border-radius-base); transition: var(--transition-base); border: 1px solid var(--border); background-color: var(--background-alt); } /* Increased padding and margin */
+.order-item:hover { transform: scale(1.01); box-shadow: var(--box-shadow-sm-base); border-left-width: 5px; }
+.order-item > div:first-child strong { color: var(--text-bright) !important; font-size: 1.15em; } /* Ensure dish name is bright */
+.order-item > div { color: var(--text-main); }
+.bebida-board .order-item.pending { border-left: 5px solid var(--warning-color); }
+.bebida-board .order-item.served { border-left: 5px solid var(--success-color); opacity: 0.6; }
+.bebida-board .order-item.served strong, .bebida-board .order-item.served div { text-decoration: line-through; }
+.kitchen-board .order-item.pendiente { border-left: 5px solid var(--danger-color); }
+.kitchen-board .order-item.en_proceso { border-left: 5px solid var(--warning-color); }
+.kitchen-board .order-item.completado { border-left: 5px solid var(--info-color); }
+.kitchen-board .order-item.servido { border-left: 5px solid var(--success-color); opacity: 0.6; }
+.kitchen-board .order-item.servido strong, .kitchen-board .order-item.servido div { text-decoration: line-through; }
+.order-item .order-status { margin-top: 0.6rem; font-size: 0.9em; font-weight: 600; color: var(--text-muted); }
+.order-item .order-note, .order-item .note { font-style: italic; color: var(--text-muted); background-color: transparent; padding: 0.3rem 0; border-left: none; }
+
+/* --- ActiveTablesList --- */
+.active-tables-container h1 { color: var(--primary-color-lighter); }
+.table-button { width: 100%; padding: 1.75rem 1rem; font-size: 1.25em; }
+.table-button:hover { transform: scale(1.02); }
+
+/* --- DishDetails --- */
+.dish-details-container > h1 { color: var(--primary-color-lighter); margin-bottom: 2.5rem; } /* Increased margin */
+.details h2 { font-size: 2.2em; color: var(--text-bright); margin-bottom: 1rem; } /* Increased margin */
+.details p { font-size: 1.1em; line-height: 1.75; color: var(--text-main); margin-bottom: 0.75rem; } /* Increased margin */
+.details p strong { color: var(--text-muted); }
+.quantity-selector-container h3, .notes h3 { font-size: 1.4em; color: var(--text-bright); margin-bottom: 1rem; } /* Increased margin */
+
+/* --- EditOrder --- */
+.edit-order > h1 { color: var(--primary-color-lighter); margin-bottom: 2.5rem; } /* Increased margin */
+.transferencia { background-color: var(--background-alt); margin-bottom: 2rem; } /* Increased margin */
+.edit-order .total { color: var(--primary-color-lighter); border-top-color: var(--primary-color); }
+
+/* --- Scrollbar, Selection, Details, Dialog, Footer --- */
+::-webkit-scrollbar { height: 12px; width: 12px; }
+::-webkit-scrollbar-track { background: var(--background-body); border-radius: 6px; }
+::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 6px; border: 2px solid var(--background-body); }
+::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-thumb-hover); }
+::-moz-selection { background-color: var(--selection); color: var(--text-bright); }
+::selection { background-color: var(--selection); color: var(--text-bright); }
+details { background-color: var(--background-alt); padding: 12px 12px 0; border-radius: var(--border-radius-base); border: 1px solid var(--border); }
+details[open] { padding: 12px; }
+summary { background-color: var(--background); padding: 12px; margin: -12px -12px 0; font-weight: 600; color: var(--text-bright); }
+summary::-webkit-details-marker { color: var(--text-main); }
+dialog { background-color: var(--background); color: var(--text-main); border: 1px solid var(--border); border-radius: var(--border-radius-base); padding: 25px 35px; box-shadow: var(--box-shadow-base); }
+dialog > header:first-child { background-color: var(--background-alt); border-radius: var(--border-radius-base) var(--border-radius-base) 0 0; margin: -25px -35px 25px; padding: 18px; border-bottom: 1px solid var(--border); }
+dialog::backdrop { background: rgba(10, 10, 20, 0.6); backdrop-filter: blur(4px); }
+
+body > footer {
+  text-align: center;
+  padding: 1.5rem; /* Adjusted padding */
+  margin-top: auto; /* For sticky footer with flexbox */
+  background-color: var(--background); /* Match body for seamless dark */
+  border-top: 1px solid var(--border);
+  color: var(--text-muted);
+  flex-shrink: 0; /* Prevent footer from shrinking */
+}
+
+/* Utility Classes */
+.text-center { text-align: center !important; }
+.mt-2 { margin-top: 1.5rem !important; }
+.mb-2 { margin-bottom: 1.5rem !important; }

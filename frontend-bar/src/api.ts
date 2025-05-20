@@ -101,8 +101,8 @@ export const fetchOrderById = async (orderId: number) => {
   return response.data;
 };
 
-export const fetchOrderBill = async () => {
-  const response = await axios.get(`${API_URL}/pedidos/cuenta`);
+export const fetchOrderBill = async (orderId: number) => {
+  const response = await axios.get(`${API_URL}/pedidos/${orderId}/cuenta`);
   return response.data;
 };
 
@@ -139,6 +139,17 @@ export const fetchMonthlySalesByYear = async (year: number): Promise<MonthlySale
   return response.data;
 };
 
+export const fetchActiveOrdersForTable = async (tableNumber: number) => {
+  const response = await axios.get(`${API_URL}/pedidos/activos/${tableNumber}`);
+  return response.data;
+};
+
+export const fetchActiveOrders  = async () => {
+  const response = await axios.get(`${API_URL}/pedidos`);
+  return response.data;
+};
+
+
 // Detalles de pedidos
 export const fetchOrderDetails = async () => {
   const response = await axios.get(`${API_URL}/detalles-pedido`);
@@ -152,6 +163,11 @@ export const fetchOrderDetailById = async (detailId: number) => {
 
 export const createOrderDetail = async (detailData: any) => {
   const response = await axios.post(`${API_URL}/detalles-pedido`, detailData);
+  return response.data;
+};
+
+export const updateOrderDetail = async (detailId: number, detailData: any) => {
+  const response = await axios.put(`${API_URL}/detalles-pedido/${detailId}`, detailData);
   return response.data;
 };
 
@@ -175,8 +191,14 @@ export const toggleOrderDetailStatus = async (detailId: number) => {
   await axios.patch(`${API_URL}/detalles-pedido/${detailId}/toggle-estado`);
 };
 
-export const fetchActiveOrders = async () => {
+export const fetchKitchenOrders = async () => {
   const response = await axios.get(`${API_URL}/detalles-pedido/activo`);
   return response.data;
 };
+
+export const fetchDrinkOrders = async () => {
+  const response = await axios.get(`${API_URL}/detalles-pedido/bebidas`);
+  return response.data;
+};
+
 
