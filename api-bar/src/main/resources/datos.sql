@@ -1,3 +1,4 @@
+-- Usuarios
 INSERT INTO usuario (nombre, contrasena, rol, habilitado)
 VALUES 
 ('Carlos Dueño', 'dueno123', 'DUEÑO', TRUE),
@@ -5,6 +6,7 @@ VALUES
 ('Juan Cocinero', 'cocinero123', 'TRABAJADOR', TRUE),
 ('Sofia Camarera', 'camarera123', 'TRABAJADOR', TRUE);
 
+-- Tipos de platos
 INSERT INTO tipo (nombre_tipo)
 VALUES 
 ('Entrantes'),
@@ -12,6 +14,7 @@ VALUES
 ('Postres'),
 ('Bebidas');
 
+-- Carta (menú)
 INSERT INTO carta (nombre_plato, descripcion, precio, categoria, disponible, habilitado, imagen, tipo_id)
 VALUES 
 ('Ensalada César', 'Ensalada fresca con pollo a la plancha', 12.50, 'MEDIA', TRUE, TRUE, 'ensalada.jpg', 1),
@@ -23,6 +26,7 @@ VALUES
 ('Helado de Vainilla', 'Helado artesanal de vainilla', 6.00, 'MEDIA', TRUE, TRUE, 'helado.jpg', 3),
 ('Cerveza Artesanal', 'Cerveza local artesanal', 5.00, 'BEBIDA', TRUE, TRUE, 'cerveza.jpg', 4);
 
+-- Pedidos
 INSERT INTO pedido (nombre_cliente, mesa, fecha, pagado, usuario_id)
 VALUES 
 ('Pedro Gomez', 5, '2023-10-01 12:30:00', FALSE, 2),
@@ -30,13 +34,14 @@ VALUES
 ('Luis Fernandez', 7, '2023-10-01 14:15:00', FALSE, 4),
 ('Elena Martinez', 2, '2023-10-01 19:30:00', TRUE, 2);
 
-INSERT INTO detalle_pedido (cantidad, estado, pedido_id, plato_id)
+-- Detalles de pedidos con notas
+INSERT INTO detalle_pedido (cantidad, estado, pedido_id, plato_id, notas)
 VALUES 
-(2, 'PENDIENTE', 1, 1), -- Ensalada César para el pedido 1
-(1, 'PENDIENTE', 1, 2), -- Filete de Res para el pedido 1
-(3, 'SERVIDO', 2, 3),   -- Tarta de Queso para el pedido 2
-(2, 'CANCELADO', 2, 4), -- Agua Mineral para el pedido 2
-(1, 'EN_PROCESO', 3, 5),-- Nachos con Queso para el pedido 3
-(2, 'PENDIENTE', 3, 6), -- Pollo al Curry para el pedido 3
-(1, 'SERVIDO', 4, 7),   -- Helado de Vainilla para el pedido 4
-(4, 'PENDIENTE', 4, 8); -- Cerveza Artesanal para el pedido 4
+(2, 'PENDIENTE', 1, 1, 'Sin aderezo'), -- Ensalada César para el pedido 1
+(1, 'PENDIENTE', 1, 2, 'Bien cocido'), -- Filete de Res para el pedido 1
+(3, 'SERVIDO', 2, 3, NULL),            -- Tarta de Queso para el pedido 2
+(2, 'CANCELADO', 2, 4, 'Sin gas'),     -- Agua Mineral para el pedido 2
+(1, 'EN_PROCESO', 3, 5, 'Extra queso'),-- Nachos con Queso para el pedido 3
+(2, 'PENDIENTE', 3, 6, NULL),          -- Pollo al Curry para el pedido 3
+(1, 'SERVIDO', 4, 7, 'Con chocolate'), -- Helado de Vainilla para el pedido 4
+(4, 'PENDIENTE', 4, 8, NULL);          -- Cerveza Artesanal para el pedido 4

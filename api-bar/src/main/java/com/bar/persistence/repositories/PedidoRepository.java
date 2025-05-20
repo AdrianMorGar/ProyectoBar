@@ -10,4 +10,6 @@ import com.bar.persistence.entities.Pedido;
 public interface PedidoRepository extends JpaRepository<Pedido, Integer> {
     List<Pedido> findByFecha(LocalDateTime fecha);
 	List<Pedido> findByFechaBetween(LocalDateTime atStartOfDay, LocalDateTime atStartOfDay2);
+	List<Pedido> findByMesaAndPagadoFalse(Integer mesa);
+
 }

@@ -13,5 +13,6 @@ public class DetallePedidoInputDTO {
     private Integer pedidoId;
     private Integer platoId;
     private Integer cantidad;
+    private String notas;
     private EstadoPedido estado;
 }

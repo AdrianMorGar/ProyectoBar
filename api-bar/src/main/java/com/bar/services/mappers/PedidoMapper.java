@@ -96,4 +96,33 @@ public class PedidoMapper {
         }
         return resultado;
     }
+    
+    public static PedidoDTO toDtoFiltrado(Pedido pedido) {
+        PedidoDTO dto = new PedidoDTO();
+        dto.setId(pedido.getId());
+        dto.setNombreCliente(pedido.getNombreCliente());
+        dto.setMesa(pedido.getMesa());
+        dto.setFecha(pedido.getFecha());
+        dto.setPagado(pedido.getPagado());
+
+        double total = 0.0;
+        List<DetallePedido> detallesValidos = new ArrayList<>();
+
+        if (pedido.getDetalles() != null) {
+            for (DetallePedido detalle : pedido.getDetalles()) {
+                if (detalle.getEstado() != EstadoPedido.CANCELADO) {
+                    detallesValidos.add(detalle);
+                    if (detalle.getPlato() != null) {
+                        total += detalle.getCantidad() * detalle.getPlato().getPrecio();
+                    }
+                }
+            }
+        }
+
+        dto.setTotal(total);
+        dto.setDetalles(DetallePedidoMapper.toOutputDtos(detallesValidos));
+
+        return dto;
+    }
+
 }

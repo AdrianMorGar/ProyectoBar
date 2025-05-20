@@ -15,7 +15,8 @@ import com.bar.services.mappers.DetallePedidoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedHashMap;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -65,17 +66,22 @@ public class DetallePedidoService {
 	}
 
 	public DetallePedidoOutputDTO update(int id, DetallePedidoInputDTO detalleDTO) {
-		DetallePedido detalleExistente = detallePedidoRepository.findById(id).orElse(null);
-		if (detalleExistente == null) {
-			throw new RuntimeException("El detalle de este pedido no existe");
-		}
+	    DetallePedido detalleExistente = detallePedidoRepository.findById(id).orElse(null);
+	    if (detalleExistente == null) {
+	        throw new RuntimeException("El detalle de este pedido no existe");
+	    }
 
-		detalleExistente.setCantidad(detalleDTO.getCantidad());
-		detalleExistente.setEstado(detalleDTO.getEstado());
+	    detalleExistente.setCantidad(detalleDTO.getCantidad());
+	    detalleExistente.setEstado(detalleDTO.getEstado());
 
-		DetallePedido updatedDetalle = detallePedidoRepository.save(detalleExistente);
-		return DetallePedidoMapper.toOutputDto(updatedDetalle);
+	    if (detalleDTO.getNotas() != null) {
+	        detalleExistente.setNotas(detalleDTO.getNotas());
+	    }
+
+	    DetallePedido updatedDetalle = detallePedidoRepository.save(detalleExistente);
+	    return DetallePedidoMapper.toOutputDto(updatedDetalle);
 	}
+
 
 	public boolean delete(int id) {
 		if (detallePedidoRepository.existsById(id)) {
@@ -113,41 +119,103 @@ public class DetallePedidoService {
 	}
 
 	public void toggleEstadoPlato(int id) {
-		DetallePedido detalle = detallePedidoRepository.findById(id).orElse(null);
-		if (detalle == null) {
-			throw new RuntimeException("El detalle de este pedido no existe");
-		}
-
-		if (detalle.getEstado() == EstadoPedido.SERVIDO || detalle.getEstado() == EstadoPedido.CANCELADO) {
-			throw new RuntimeException("No se puede alternar el estado de un plato ya servido o cancelado");
-		}
+		DetallePedido detalle = detallePedidoRepository.findById(id)
+				.orElseThrow(() -> new RuntimeException("El detalle de este pedido no existe"));
 
 		if (detalle.getEstado() == EstadoPedido.PENDIENTE) {
 			detalle.setEstado(EstadoPedido.EN_PROCESO);
 		} else if (detalle.getEstado() == EstadoPedido.EN_PROCESO) {
+			detalle.setEstado(EstadoPedido.COMPLETADO);
+		} else if (detalle.getEstado() == EstadoPedido.COMPLETADO) {
 			detalle.setEstado(EstadoPedido.PENDIENTE);
 		}
 
 		detallePedidoRepository.save(detalle);
 	}
 
-	public Map<Integer, List<DetallePedidoOutputDTO>> listarDetallesActivo() {
-		List<DetallePedido> detalles = detallePedidoRepository.findAll().stream()
-				.filter(detalle -> detalle.getEstado() != EstadoPedido.CANCELADO && detalle.getEstado() != EstadoPedido.SERVIDO)
-				.filter(detalle -> !Categoria.BEBIDA.equals(detalle.getPlato().getCategoria())).toList();
+	public List<Map<String, Object>> listarDetallesActivo() {
+	    List<DetallePedido> detalles = detallePedidoRepository.findAll().stream()
+	        .filter(detalle -> detalle.getEstado() != EstadoPedido.CANCELADO && detalle.getEstado() != EstadoPedido.SERVIDO)
+	        .filter(detalle -> !Categoria.BEBIDA.equals(detalle.getPlato().getCategoria()))
+	        .filter(detalle -> detalle.getPedido() != null && Boolean.FALSE.equals(detalle.getPedido().getPagado())) // excluir pagados
+	        .toList();
 
-		return detalles.stream().map(DetallePedidoMapper::toOutputDto).collect(Collectors.groupingBy(
-				dto -> dto.getMesa(), LinkedHashMap::new, Collectors.collectingAndThen(Collectors.toList(), lista -> {
-					lista.sort((d1, d2) -> {
-						if (d1.getEstado() == EstadoPedido.EN_PROCESO && d2.getEstado() != EstadoPedido.EN_PROCESO) {
-							return -1;
-						} else if (d1.getEstado() != EstadoPedido.EN_PROCESO
-								&& d2.getEstado() == EstadoPedido.EN_PROCESO) {
-							return 1;
-						}
-						return 0;
-					});
-					return lista;
-				})));
+	    // Agrupar por mesa o nombre del cliente si mesa es null
+	    Map<String, List<DetallePedido>> detallesPorIdentificador = detalles.stream()
+	        .collect(Collectors.groupingBy(detalle -> {
+	            Pedido pedido = detalle.getPedido();
+	            if (pedido.getMesa() != null) {
+	                return "Mesa " + pedido.getMesa();
+	            } else {
+	                return "Barra " + (pedido.getNombreCliente() != null ? pedido.getNombreCliente() : "Desconocido");
+	            }
+	        }));
+
+	    // Ordenar y construir resultado
+	    List<Map<String, Object>> resultado = new ArrayList<>();
+	    for (Map.Entry<String, List<DetallePedido>> entry : detallesPorIdentificador.entrySet()) {
+	        String identificador = entry.getKey();
+	        List<DetallePedido> detallesLista = entry.getValue();
+
+	        List<DetallePedidoOutputDTO> detallesOrdenados = detallesLista.stream()
+	            .sorted((d1, d2) -> {
+	                if (d1.getEstado() == EstadoPedido.EN_PROCESO && d2.getEstado() != EstadoPedido.EN_PROCESO) return -1;
+	                if (d1.getEstado() != EstadoPedido.EN_PROCESO && d2.getEstado() == EstadoPedido.EN_PROCESO) return 1;
+	                if (d1.getEstado() == EstadoPedido.PENDIENTE && d2.getEstado() == EstadoPedido.COMPLETADO) return -1;
+	                if (d1.getEstado() == EstadoPedido.COMPLETADO && d2.getEstado() == EstadoPedido.PENDIENTE) return 1;
+	                return 0;
+	            })
+	            .map(DetallePedidoMapper::toOutputDto)
+	            .collect(Collectors.toList());
+
+	        Map<String, Object> mesaConDetalles = new HashMap<>();
+	        mesaConDetalles.put("mesa", identificador);
+	        mesaConDetalles.put("detalles", detallesOrdenados);
+	        resultado.add(mesaConDetalles);
+	    }
+
+	    return resultado;
 	}
+	
+	public List<Map<String, Object>> listarBebidas() {
+	    List<DetallePedido> detalles = detallePedidoRepository.findAll().stream()
+	        .filter(detalle ->
+	            detalle.getEstado() == EstadoPedido.PENDIENTE &&
+	            detalle.getPlato() != null &&
+	            Categoria.BEBIDA.equals(detalle.getPlato().getCategoria()) &&
+	            detalle.getPedido() != null &&
+	            Boolean.FALSE.equals(detalle.getPedido().getPagado())
+	        )
+	        .toList();
+
+	    Map<String, List<DetallePedido>> detallesPorIdentificador = detalles.stream()
+	        .collect(Collectors.groupingBy(detalle -> {
+	            Pedido pedido = detalle.getPedido();
+	            if (pedido.getMesa() != null) {
+	                return "Mesa " + pedido.getMesa();
+	            } else {
+	                return "Barra " + (pedido.getNombreCliente() != null ? pedido.getNombreCliente() : "Desconocido");
+	            }
+	        }));
+
+	    List<Map<String, Object>> resultado = new ArrayList<>();
+	    for (Map.Entry<String, List<DetallePedido>> entry : detallesPorIdentificador.entrySet()) {
+	        String identificador = entry.getKey();
+	        List<DetallePedido> detallesLista = entry.getValue();
+
+	        List<DetallePedidoOutputDTO> detallesDTO = new ArrayList<>();
+	        for (DetallePedido detalle : detallesLista) {
+	            detallesDTO.add(DetallePedidoMapper.toOutputDto(detalle));
+	        }
+
+	        Map<String, Object> grupo = new HashMap<>();
+	        grupo.put("mesa", identificador);
+	        grupo.put("detalles", detallesDTO);
+	        resultado.add(grupo);
+	    }
+
+	    return resultado;
+	}
+
+
 }

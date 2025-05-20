@@ -14,6 +14,7 @@ public class DetallePedidoMapper {
         DetallePedido detalle = new DetallePedido();
         detalle.setId(dto.getId());
         detalle.setCantidad(dto.getCantidad());
+        detalle.setNotas(dto.getNotas());
 
         Plato plato = new Plato();
         plato.setId(dto.getPlatoId());
@@ -28,6 +29,7 @@ public class DetallePedidoMapper {
         DetallePedidoOutputDTO dto = new DetallePedidoOutputDTO();
         dto.setId(detalle.getId());
         dto.setCantidad(detalle.getCantidad());
+        dto.setNotas(detalle.getNotas());
         dto.setPrecioUnitario(detalle.getPlato().getPrecio());
         dto.setPlato(detalle.getPlato().getNombrePlato());
         dto.setEstado(detalle.getEstado());

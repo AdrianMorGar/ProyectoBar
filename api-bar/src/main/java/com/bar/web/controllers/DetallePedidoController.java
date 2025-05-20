@@ -51,7 +51,7 @@ public class DetallePedidoController {
         detallePedidoService.cancelarPlato(id);
         return ResponseEntity.ok().build();
     }
-
+    
     @PatchMapping("/{id}/servir")
     public ResponseEntity<Void> servirPlato(@PathVariable int id) {
         detallePedidoService.servirPlato(id);
@@ -60,7 +60,7 @@ public class DetallePedidoController {
     
     @PatchMapping("/{id}/pendiente")
     public ResponseEntity<Void> pendientePlato(@PathVariable int id) {
-        detallePedidoService.servirPlato(id);
+        detallePedidoService.pendientePlato(id);
         return ResponseEntity.ok().build();
     }
 
@@ -80,8 +80,15 @@ public class DetallePedidoController {
     }
     
     @GetMapping("/activo")
-    public ResponseEntity<Map<Integer, List<DetallePedidoOutputDTO>>> listarDetallesActivo() {
-        Map<Integer, List<DetallePedidoOutputDTO>> detallesPorMesa = detallePedidoService.listarDetallesActivo();
+    public ResponseEntity<List<Map<String, Object>>> listarDetallesActivo() {
+        List<Map<String, Object>> detallesPorMesa = detallePedidoService.listarDetallesActivo();
         return ResponseEntity.ok(detallesPorMesa);
     }
+    
+    @GetMapping("/bebidas")
+    public ResponseEntity<List<Map<String, Object>>> listarBebidas() {
+        return ResponseEntity.ok(detallePedidoService.listarBebidas());
+    }
+
+
 }

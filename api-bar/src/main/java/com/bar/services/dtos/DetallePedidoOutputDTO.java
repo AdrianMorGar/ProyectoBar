@@ -13,6 +13,7 @@ import lombok.Setter;
 public class DetallePedidoOutputDTO {
     private Integer id;
     private Integer cantidad;
+    private String notas;
     private Double precioUnitario;
     private String plato;
     private EstadoPedido estado;

@@ -23,7 +23,7 @@ public class UsuarioService {
 
     public List<UsuarioOutputDTO> findAll() {
         List<UsuarioOutputDTO> usuariosDTO = new ArrayList<>();
-        for (Usuario usuario : this.usuarioRepository.findAll()) {
+        for (Usuario usuario : this.usuarioRepository.findByHabilitadoTrue()) {
             usuariosDTO.add(UsuarioMapper.toOutputDto(usuario));
         }
         return usuariosDTO;

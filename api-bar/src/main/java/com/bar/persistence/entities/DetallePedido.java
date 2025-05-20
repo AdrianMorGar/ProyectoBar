@@ -30,6 +30,9 @@ public class DetallePedido {
     @Column(nullable = false)
     private Integer cantidad;
     
+    @Column(columnDefinition = "VARCHAR(255)")
+    private String notas;
+    
     @Enumerated(EnumType.STRING)
     private EstadoPedido estado;
     

@@ -2,6 +2,7 @@ package com.bar.services;
 
 import com.bar.persistence.entities.DetallePedido;
 import com.bar.persistence.entities.Pedido;
+import com.bar.persistence.entities.enums.EstadoPedido;
 import com.bar.persistence.repositories.PedidoRepository;
 import com.bar.services.dtos.PedidoDTO;
 import com.bar.services.dtos.PedidoVentaDTO;
@@ -37,9 +38,13 @@ public class PedidoService {
 	}
 
 	public PedidoDTO create(PedidoDTO pedidoDTO) {
-		Pedido pedido = PedidoMapper.toEntity(pedidoDTO);
-		Pedido savedPedido = pedidoRepository.save(pedido);
-		return PedidoMapper.toDto(savedPedido);
+	    Pedido pedido = PedidoMapper.toEntity(pedidoDTO);
+
+	    pedido.setFecha(LocalDateTime.now());
+	    pedido.setPagado(false);
+
+	    Pedido savedPedido = pedidoRepository.save(pedido);
+	    return PedidoMapper.toDto(savedPedido);
 	}
 
 	public PedidoDTO update(int id, PedidoDTO pedidoDTO) {
@@ -73,7 +78,7 @@ public class PedidoService {
 		double total = 0.0;
 		if (pedido.getDetalles() != null) {
 			for (DetallePedido detalle : pedido.getDetalles()) {
-				if (detalle.getEstado() != null && detalle.getPlato() != null) {
+				if (detalle.getEstado() != null && detalle.getPlato() != null && detalle.getEstado() != EstadoPedido.CANCELADO) {
 					total += detalle.getCantidad() * detalle.getPlato().getPrecio();
 				}
 			}
@@ -138,6 +143,35 @@ public class PedidoService {
 		}
 
 		return ventasPorMes;
+	}
+	
+	public List<PedidoDTO> fetchActiveOrdersForTable(int mesa) {
+	    List<Pedido> pedidos = pedidoRepository.findByMesaAndPagadoFalse(mesa);
+	    return PedidoMapper.toDtos(pedidos);
+	}
+	
+	public List<PedidoDTO> findPedidos() {
+	    List<Pedido> pedidos = pedidoRepository.findAll();
+	    List<PedidoDTO> resultado = new ArrayList<>();
+
+	    for (Pedido pedido : pedidos) {
+	        boolean tieneActivos = false;
+
+	        if (pedido.getDetalles() != null) {
+	            for (DetallePedido detalle : pedido.getDetalles()) {
+	                if (detalle.getEstado() != EstadoPedido.CANCELADO) {
+	                    tieneActivos = true;
+	                    break;
+	                }
+	            }
+	        }
+
+	        if (tieneActivos) {
+	            resultado.add(PedidoMapper.toDtoFiltrado(pedido));
+	        }
+	    }
+
+	    return resultado;
 	}
 
 }

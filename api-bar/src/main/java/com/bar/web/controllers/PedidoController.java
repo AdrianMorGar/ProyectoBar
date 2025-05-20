@@ -93,4 +93,16 @@ public class PedidoController {
         Map<Integer, Double> ventasPorMes = pedidoService.calcularVentasMes(year);
         return ResponseEntity.ok(ventasPorMes);
     }
+    
+    @GetMapping("/activos/{mesa}")
+    public ResponseEntity<List<PedidoDTO>> fetchActiveOrdersForTable(@PathVariable int mesa) {
+        List<PedidoDTO> pedidosActivos = pedidoService.fetchActiveOrdersForTable(mesa);
+        return ResponseEntity.ok(pedidosActivos);
+    }
+    
+    @GetMapping("/pedidos")
+    public ResponseEntity<List<PedidoDTO>> findPedidos() {
+        return ResponseEntity.ok(pedidoService.findPedidos());
+    }
+
 }
