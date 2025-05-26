@@ -27,6 +27,9 @@ public class Tipo {
 
     @Column(name = "nombre_tipo", columnDefinition = "VARCHAR(255)", nullable = false)
     private String nombreTipo;
+    
+    @Column(columnDefinition="LONGTEXT")
+    private String imagen;
 
     @OneToMany(mappedBy = "tipo")
     @JsonIgnore

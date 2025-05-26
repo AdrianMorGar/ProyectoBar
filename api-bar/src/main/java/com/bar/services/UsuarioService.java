@@ -9,6 +9,7 @@ import com.bar.services.dtos.UsuarioOutputDTO;
 import com.bar.services.mappers.UsuarioMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,6 +21,10 @@ public class UsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+    
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
 
     public List<UsuarioOutputDTO> findAll() {
         List<UsuarioOutputDTO> usuariosDTO = new ArrayList<>();
@@ -51,16 +56,24 @@ public class UsuarioService {
 
         usuario.setHabilitado(true);
         usuario.setRol(Rol.TRABAJADOR);
+        usuario.setContrasena(passwordEncoder.encode(usuario.getContrasena()));
 
         Usuario savedUsuario = usuarioRepository.save(usuario);
         return UsuarioMapper.toOutputDto(savedUsuario);
     }
 
+
     public UsuarioOutputDTO save(UsuarioInputDTO usuarioInputDTO) {
         Usuario usuario = UsuarioMapper.toEntity(usuarioInputDTO);
+        
+        usuario.setHabilitado(true);
+        usuario.setRol(Rol.TRABAJADOR);
+        usuario.setContrasena(passwordEncoder.encode(usuario.getContrasena()));
+        
         Usuario updatedUsuario = this.usuarioRepository.save(usuario);
         return UsuarioMapper.toOutputDto(updatedUsuario);
     }
+
 
     public UsuarioOutputDTO cambiarPassword(Integer id, PasswordDTO passwordDTO) {
         Usuario usuario = this.usuarioRepository.findById(id).orElse(null);
@@ -68,14 +81,15 @@ public class UsuarioService {
             throw new RuntimeException("Usuario no encontrado");
         }
 
-        if (!usuario.getContrasena().equals(passwordDTO.getVieja())) {
+        if (!passwordEncoder.matches(passwordDTO.getVieja(), usuario.getContrasena())) {
             throw new RuntimeException("La contraseña antigua no coincide");
         }
-
-        usuario.setContrasena(passwordDTO.getNueva());
+        usuario.setContrasena(passwordEncoder.encode(passwordDTO.getNueva()));
+        
         Usuario updatedUsuario = this.usuarioRepository.save(usuario);
         return UsuarioMapper.toOutputDto(updatedUsuario);
     }
+
 
     public boolean toggleUsuario(Integer id) {
         Usuario usuario = this.usuarioRepository.findById(id).orElse(null);

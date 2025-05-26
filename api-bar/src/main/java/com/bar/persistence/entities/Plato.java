@@ -44,7 +44,7 @@ public class Plato {
     private Boolean disponible;
     private Boolean habilitado;
 
-    @Column(length = 255)
+    @Column(columnDefinition="LONGTEXT")
     private String imagen;
     
     @OneToMany(mappedBy = "plato")
