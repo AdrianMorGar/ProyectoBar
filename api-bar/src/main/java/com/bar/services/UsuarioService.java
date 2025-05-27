@@ -55,7 +55,13 @@ public class UsuarioService {
         Usuario usuario = UsuarioMapper.toEntity(usuarioInputDTO);
 
         usuario.setHabilitado(true);
-        usuario.setRol(Rol.TRABAJADOR);
+        
+        if (usuario.getRol() == Rol.DUENO) {
+        	usuario.setRol(Rol.DUENO);
+        } else if (usuario.getRol() == Rol.TRABAJADOR) {
+        	usuario.setRol(Rol.TRABAJADOR);
+        }
+        
         usuario.setContrasena(passwordEncoder.encode(usuario.getContrasena()));
 
         Usuario savedUsuario = usuarioRepository.save(usuario);
@@ -67,6 +73,7 @@ public class UsuarioService {
         Usuario usuario = UsuarioMapper.toEntity(usuarioInputDTO);
         
         usuario.setHabilitado(true);
+        
         usuario.setRol(Rol.TRABAJADOR);
         usuario.setContrasena(passwordEncoder.encode(usuario.getContrasena()));
         
