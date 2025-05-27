@@ -1,10 +1,83 @@
+CREATE TABLE IF NOT EXISTS usuario (
+  id SERIAL PRIMARY KEY,
+  nombre VARCHAR(255) NOT NULL,
+  contrasena VARCHAR(255) NOT NULL,
+  rol VARCHAR(50) NULL,
+  habilitado BOOLEAN NULL
+);
+
+CREATE TABLE IF NOT EXISTS tipo (
+  id SERIAL PRIMARY KEY,
+  nombre_tipo VARCHAR(255) NOT NULL,
+  imagen TEXT NULL
+);
+
+CREATE TABLE IF NOT EXISTS carta (
+  id SERIAL PRIMARY KEY,
+  nombre_plato VARCHAR(255) NOT NULL,
+  descripcion VARCHAR(255) NULL,
+  precio DECIMAL(8,2) NOT NULL,
+  categoria VARCHAR(50) NULL,
+  disponible BOOLEAN NULL,
+  habilitado BOOLEAN NULL,
+  imagen TEXT NULL,
+  tipo_id INT NULL,
+  CONSTRAINT fk_carta_tipo
+    FOREIGN KEY (tipo_id)
+    REFERENCES tipo (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+);
+
+CREATE TABLE IF NOT EXISTS pedido (
+  id SERIAL PRIMARY KEY,
+  nombre_cliente VARCHAR(255) NULL,
+  mesa INT NULL,
+  fecha TIMESTAMP NULL,
+  pagado BOOLEAN NULL,
+  usuario_id INT NULL,
+  CONSTRAINT fk_pedido_usuario
+    FOREIGN KEY (usuario_id)
+    REFERENCES usuario (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+);
+
+CREATE TABLE IF NOT EXISTS detalle_pedido (
+  id SERIAL PRIMARY KEY,
+  cantidad INT NOT NULL,
+  notas VARCHAR(255) NULL,
+  estado VARCHAR(50) NULL,
+  pedido_id INT NULL,
+  plato_id INT NULL,
+  CONSTRAINT fk_detalle_pedido_pedido
+    FOREIGN KEY (pedido_id)
+    REFERENCES pedido (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_detalle_pedido_plato
+    FOREIGN KEY (plato_id)
+    REFERENCES carta (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+);
+
+CREATE INDEX IF NOT EXISTS fk_pedido_usuario_idx ON pedido (usuario_id);
+CREATE INDEX IF NOT EXISTS fk_carta_tipo_idx ON carta (tipo_id);
+CREATE INDEX IF NOT EXISTS fk_detalle_pedido_pedido_idx ON detalle_pedido (pedido_id);
+CREATE INDEX IF NOT EXISTS fk_detalle_pedido_plato_idx ON detalle_pedido (plato_id);
+
+
+-- Los INSERTS.
 -- Usuarios
 INSERT INTO usuario (nombre, contrasena, rol, habilitado)
 VALUES 
-('Carlos Dueño', '$2a$10$GbzETRtHuj9CEYyojYezme9bFz/jylV3veozh1cWNGQbn8GG0IAsS', 'DUEÑO', TRUE), -- 1234
+('Carlos Dueño', '$2a$10$GbzETRtHuj9CEYyojYezme9bFz/jylV3veozh1cWNGQbn8GG0IAsS', 'DUENO', TRUE), -- 1234
 ('Ana Trabajadora', '$2a$10$RJ05KxE4fZDVA.PK6cEheuxNgnXW947H2aFINZgDJB.Nxu2ZBbFdO', 'TRABAJADOR', TRUE), -- trabajador123
 ('Juan Cocinero', '$2a$10$Kk6GVB51z6HVsgUHXXy0OeOISxxPmmV/LbmyDCZInJ/RnKXCaw70O', 'TRABAJADOR', TRUE), -- cocinero123
 ('Sofia Camarera', '$2a$10$hPsOGIyYfOCplW6pPGzx1.XCtCVWK8x/zjj7SbtC3937ndj.56Da2', 'TRABAJADOR', TRUE); -- camarera123
+
+
 
 -- Tipos de platos
 INSERT INTO tipo (nombre_tipo, imagen)
@@ -85,7 +158,7 @@ INSERT INTO carta (nombre_plato, descripcion, precio, categoria, disponible, hab
 ('Refresco Naranja', 'Lata de refresco sabor naranja', 1.80, 'BEBIDA', TRUE, TRUE, '', 4),
 ('Tónica', 'Lata de tónica, ideal para combinados', 1.90, 'BEBIDA', TRUE, TRUE, '', 4),
 ('Nestea de Limón', 'Té frío con sabor a limón', 2.00, 'BEBIDA', TRUE, TRUE, '', 4),
-('Aquarius Limón', 'Bebida isotónica con sabor a limón', 2.00, 'BEBIDA', TRUE, TRUE, '', 4),
+('Aquarius Limón', 'Bebida isotónica con sabor a limón', 2.00, 'BEBIDA', TRUE, TRUE, '', 4);
 
 -- Pedidos
 INSERT INTO pedido (nombre_cliente, mesa, fecha, pagado, usuario_id)
@@ -95,25 +168,14 @@ VALUES
 ('Luis Fernandez', 7, '2023-10-01 14:15:00', FALSE, 4),
 ('Elena Martinez', 2, '2023-10-01 19:30:00', TRUE, 2);
 
--- Detalles de pedidos con notas
+-- Detalles de pedidos
 INSERT INTO detalle_pedido (cantidad, estado, pedido_id, plato_id, notas)
 VALUES 
-(2, 'PENDIENTE', 1, 1, 'Sin aderezo'), -- Ensalada César para el pedido 1
-(1, 'PENDIENTE', 1, 2, 'Bien cocido'), -- Filete de Res para el pedido 1
-(3, 'SERVIDO', 2, 3, NULL),            -- Tarta de Queso para el pedido 2
-(2, 'CANCELADO', 2, 4, 'Sin gas'),     -- Agua Mineral para el pedido 2
-(1, 'EN_PROCESO', 3, 5, 'Extra queso'),-- Nachos con Queso para el pedido 3
-(2, 'PENDIENTE', 3, 6, NULL),          -- Pollo al Curry para el pedido 3
-(1, 'SERVIDO', 4, 7, 'Con chocolate'), -- Helado de Vainilla para el pedido 4
-(4, 'PENDIENTE', 4, 8, NULL);          -- Cerveza Artesanal para el pedido 4
-
-# spring.application.name=api-bar
-# server.servlet.context-path=/bar/api
-
-# spring.datasource.url=jdbc:mysql://sql.freedb.tech:3306/freedb_api_bar
-# spring.datasource.username=freedb_amorgar2004
-# spring.datasource.password=9VrAWV9fNEncF9%
-# spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver # Usar driver MySQL para la mayoría de proveedores gratuitos
-
-# spring.jpa.hibernate.ddl-auto=update
-# spring.jpa.show-sql=true
+(2, 'PENDIENTE', 1, 1, 'Sin aderezo'),
+(1, 'PENDIENTE', 1, 2, 'Bien cocido'),
+(3, 'SERVIDO', 2, 3, NULL),
+(2, 'CANCELADO', 2, 4, 'Sin gas'),
+(1, 'EN_PROCESO', 3, 5, 'Extra queso'),
+(2, 'PENDIENTE', 3, 6, NULL),
+(1, 'SERVIDO', 4, 7, 'Con chocolate'),
+(4, 'PENDIENTE', 4, 8, NULL);
