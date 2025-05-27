@@ -106,3 +106,14 @@ VALUES
 (2, 'PENDIENTE', 3, 6, NULL),          -- Pollo al Curry para el pedido 3
 (1, 'SERVIDO', 4, 7, 'Con chocolate'), -- Helado de Vainilla para el pedido 4
 (4, 'PENDIENTE', 4, 8, NULL);          -- Cerveza Artesanal para el pedido 4
+
+# spring.application.name=api-bar
+# server.servlet.context-path=/bar/api
+
+# spring.datasource.url=jdbc:mysql://sql.freedb.tech:3306/freedb_api_bar
+# spring.datasource.username=freedb_amorgar2004
+# spring.datasource.password=9VrAWV9fNEncF9%
+# spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver # Usar driver MySQL para la mayoría de proveedores gratuitos
+
+# spring.jpa.hibernate.ddl-auto=update
+# spring.jpa.show-sql=true
