@@ -21,17 +21,17 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class Tipo {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
-    @Column(name = "nombre_tipo", columnDefinition = "VARCHAR(255)", nullable = false)
-    private String nombreTipo;
-    
-    @Column(columnDefinition="LONGTEXT")
-    private String imagen;
+	@Column(name = "nombre_tipo", columnDefinition = "VARCHAR(255)", nullable = false)
+	private String nombreTipo;
 
-    @OneToMany(mappedBy = "tipo")
-    @JsonIgnore
-    private List<Plato> platos;
+	@Column(columnDefinition = "LONGTEXT")
+	private String imagen;
+
+	@OneToMany(mappedBy = "tipo")
+	@JsonIgnore
+	private List<Plato> platos;
 }

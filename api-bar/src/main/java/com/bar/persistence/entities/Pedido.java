@@ -25,24 +25,24 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Setter
 @NoArgsConstructor
 public class Pedido {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-    
-    @Column(length = 255)
-    private String nombreCliente;
-    private Integer mesa;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
-    @Column(columnDefinition = "DATETIME")
-    private LocalDateTime fecha;
-    
-    private Boolean pagado;
+	@Column(length = 255)
+	private String nombreCliente;
+	private Integer mesa;
 
-    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<DetallePedido> detalles;
-    
-    @ManyToOne
+	@Column(columnDefinition = "DATETIME")
+	private LocalDateTime fecha;
+
+	private Boolean pagado;
+
+	@OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
+	@JsonIgnore
+	private List<DetallePedido> detalles;
+
+	@ManyToOne
 	@JoinColumn(name = "usuario_id", referencedColumnName = "id")
-    private Usuario usuario;
+	private Usuario usuario;
 }

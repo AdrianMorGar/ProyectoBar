@@ -67,22 +67,21 @@ public class DetallePedidoService {
 	}
 
 	public DetallePedidoOutputDTO update(int id, DetallePedidoInputDTO detalleDTO) {
-	    DetallePedido detalleExistente = detallePedidoRepository.findById(id).orElse(null);
-	    if (detalleExistente == null) {
-	        throw new RuntimeException("El detalle de este pedido no existe");
-	    }
+		DetallePedido detalleExistente = detallePedidoRepository.findById(id).orElse(null);
+		if (detalleExistente == null) {
+			throw new RuntimeException("El detalle de este pedido no existe");
+		}
 
-	    detalleExistente.setCantidad(detalleDTO.getCantidad());
-	    detalleExistente.setEstado(detalleDTO.getEstado());
+		detalleExistente.setCantidad(detalleDTO.getCantidad());
+		detalleExistente.setEstado(detalleDTO.getEstado());
 
-	    if (detalleDTO.getNotas() != null) {
-	        detalleExistente.setNotas(detalleDTO.getNotas());
-	    }
+		if (detalleDTO.getNotas() != null) {
+			detalleExistente.setNotas(detalleDTO.getNotas());
+		}
 
-	    DetallePedido updatedDetalle = detallePedidoRepository.save(detalleExistente);
-	    return DetallePedidoMapper.toOutputDto(updatedDetalle);
+		DetallePedido updatedDetalle = detallePedidoRepository.save(detalleExistente);
+		return DetallePedidoMapper.toOutputDto(updatedDetalle);
 	}
-
 
 	public boolean delete(int id) {
 		if (detallePedidoRepository.existsById(id)) {
@@ -135,104 +134,96 @@ public class DetallePedidoService {
 	}
 
 	public List<Map<String, Object>> listarDetallesActivo() {
-	    List<DetallePedido> detalles = detallePedidoRepository.findAll().stream()
-	        .filter(detalle -> detalle.getEstado() != EstadoPedido.CANCELADO && detalle.getEstado() != EstadoPedido.SERVIDO)
-	        .filter(detalle -> !Categoria.BEBIDA.equals(detalle.getPlato().getCategoria()))
-	        .filter(detalle -> detalle.getPedido() != null && Boolean.FALSE.equals(detalle.getPedido().getPagado()))
-	        .toList();
+		List<DetallePedido> detalles = detallePedidoRepository.findAll().stream()
+				.filter(detalle -> detalle.getEstado() != EstadoPedido.CANCELADO
+						&& detalle.getEstado() != EstadoPedido.SERVIDO)
+				.filter(detalle -> !Categoria.BEBIDA.equals(detalle.getPlato().getCategoria()))
+				.filter(detalle -> detalle.getPedido() != null && Boolean.FALSE.equals(detalle.getPedido().getPagado()))
+				.toList();
 
-	    // Agrupar por mesa o nombre del cliente si mesa es null
-	    Map<String, List<DetallePedido>> detallesPorIdentificador = detalles.stream()
-	        .collect(Collectors.groupingBy(detalle -> {
-	            Pedido pedido = detalle.getPedido();
-	            if (pedido.getMesa() != null) {
-	                return "Mesa " + pedido.getMesa();
-	            } else {
-	                return "Barra " + (pedido.getNombreCliente() != null ? pedido.getNombreCliente() : "Desconocido");
-	            }
-	        }));
+		Map<String, List<DetallePedido>> detallesPorIdentificador = detalles.stream()
+				.collect(Collectors.groupingBy(detalle -> {
+					Pedido pedido = detalle.getPedido();
+					if (pedido.getMesa() != null) {
+						return "Mesa " + pedido.getMesa();
+					} else {
+						return "Barra "
+								+ (pedido.getNombreCliente() != null ? pedido.getNombreCliente() : "Desconocido");
+					}
+				}));
 
-	    // Construir resultado con campo auxiliar para ordenar por fecha
-	    List<Map<String, Object>> resultado = new ArrayList<>();
-	    for (Map.Entry<String, List<DetallePedido>> entry : detallesPorIdentificador.entrySet()) {
-	        String identificador = entry.getKey();
-	        List<DetallePedido> detallesLista = entry.getValue();
+		List<Map<String, Object>> resultado = new ArrayList<>();
+		for (Map.Entry<String, List<DetallePedido>> entry : detallesPorIdentificador.entrySet()) {
+			String identificador = entry.getKey();
+			List<DetallePedido> detallesLista = entry.getValue();
 
-	        List<DetallePedidoOutputDTO> detallesOrdenados = detallesLista.stream()
-	            .sorted((d1, d2) -> {
-	                if (d1.getEstado() == EstadoPedido.EN_PROCESO && d2.getEstado() != EstadoPedido.EN_PROCESO) return -1;
-	                if (d1.getEstado() != EstadoPedido.EN_PROCESO && d2.getEstado() == EstadoPedido.EN_PROCESO) return 1;
-	                if (d1.getEstado() == EstadoPedido.PENDIENTE && d2.getEstado() == EstadoPedido.COMPLETADO) return -1;
-	                if (d1.getEstado() == EstadoPedido.COMPLETADO && d2.getEstado() == EstadoPedido.PENDIENTE) return 1;
-	                return 0;
-	            })
-	            .map(DetallePedidoMapper::toOutputDto)
-	            .collect(Collectors.toList());
+			List<DetallePedidoOutputDTO> detallesOrdenados = detallesLista.stream().sorted((d1, d2) -> {
+				if (d1.getEstado() == EstadoPedido.EN_PROCESO && d2.getEstado() != EstadoPedido.EN_PROCESO)
+					return -1;
+				if (d1.getEstado() != EstadoPedido.EN_PROCESO && d2.getEstado() == EstadoPedido.EN_PROCESO)
+					return 1;
+				if (d1.getEstado() == EstadoPedido.PENDIENTE && d2.getEstado() == EstadoPedido.COMPLETADO)
+					return -1;
+				if (d1.getEstado() == EstadoPedido.COMPLETADO && d2.getEstado() == EstadoPedido.PENDIENTE)
+					return 1;
+				return 0;
+			}).map(DetallePedidoMapper::toOutputDto).collect(Collectors.toList());
 
-	        Map<String, Object> mesaConDetalles = new HashMap<>();
-	        mesaConDetalles.put("mesa", identificador);
-	        mesaConDetalles.put("detalles", detallesOrdenados);
-	        mesaConDetalles.put("fechaPedido", detallesLista.stream()
-	            .map(d -> d.getPedido().getFecha())
-	            .min(LocalDateTime::compareTo)
-	            .orElse(LocalDateTime.now())); // Campo auxiliar para ordenar luego
+			Map<String, Object> mesaConDetalles = new HashMap<>();
+			mesaConDetalles.put("mesa", identificador);
+			mesaConDetalles.put("detalles", detallesOrdenados);
+			mesaConDetalles.put("fechaPedido", detallesLista.stream().map(d -> d.getPedido().getFecha())
+					.min(LocalDateTime::compareTo).orElse(LocalDateTime.now()));
 
-	        resultado.add(mesaConDetalles);
-	    }
+			resultado.add(mesaConDetalles);
+		}
 
-	    // Ordenar resultado por fecha del pedido más antiguo en cada grupo
-	    resultado.sort((m1, m2) -> {
-	        LocalDateTime f1 = (LocalDateTime) m1.get("fechaPedido");
-	        LocalDateTime f2 = (LocalDateTime) m2.get("fechaPedido");
-	        return f1.compareTo(f2);
-	    });
+		resultado.sort((m1, m2) -> {
+			LocalDateTime f1 = (LocalDateTime) m1.get("fechaPedido");
+			LocalDateTime f2 = (LocalDateTime) m2.get("fechaPedido");
+			return f1.compareTo(f2);
+		});
 
-	    // Eliminar campo auxiliar
-	    resultado.forEach(m -> m.remove("fechaPedido"));
+		resultado.forEach(m -> m.remove("fechaPedido"));
 
-	    return resultado;
+		return resultado;
 	}
 
-	
 	public List<Map<String, Object>> listarBebidas() {
-	    List<DetallePedido> detalles = detallePedidoRepository.findAll().stream()
-	        .filter(detalle ->
-	            detalle.getEstado() == EstadoPedido.PENDIENTE &&
-	            detalle.getPlato() != null &&
-	            Categoria.BEBIDA.equals(detalle.getPlato().getCategoria()) &&
-	            detalle.getPedido() != null &&
-	            Boolean.FALSE.equals(detalle.getPedido().getPagado())
-	        )
-	        .toList();
+		List<DetallePedido> detalles = detallePedidoRepository.findAll().stream()
+				.filter(detalle -> detalle.getEstado() == EstadoPedido.PENDIENTE && detalle.getPlato() != null
+						&& Categoria.BEBIDA.equals(detalle.getPlato().getCategoria()) && detalle.getPedido() != null
+						&& Boolean.FALSE.equals(detalle.getPedido().getPagado()))
+				.toList();
 
-	    Map<String, List<DetallePedido>> detallesPorIdentificador = detalles.stream()
-	        .collect(Collectors.groupingBy(detalle -> {
-	            Pedido pedido = detalle.getPedido();
-	            if (pedido.getMesa() != null) {
-	                return "Mesa " + pedido.getMesa();
-	            } else {
-	                return "Barra " + (pedido.getNombreCliente() != null ? pedido.getNombreCliente() : "Desconocido");
-	            }
-	        }));
+		Map<String, List<DetallePedido>> detallesPorIdentificador = detalles.stream()
+				.collect(Collectors.groupingBy(detalle -> {
+					Pedido pedido = detalle.getPedido();
+					if (pedido.getMesa() != null) {
+						return "Mesa " + pedido.getMesa();
+					} else {
+						return "Barra "
+								+ (pedido.getNombreCliente() != null ? pedido.getNombreCliente() : "Desconocido");
+					}
+				}));
 
-	    List<Map<String, Object>> resultado = new ArrayList<>();
-	    for (Map.Entry<String, List<DetallePedido>> entry : detallesPorIdentificador.entrySet()) {
-	        String identificador = entry.getKey();
-	        List<DetallePedido> detallesLista = entry.getValue();
+		List<Map<String, Object>> resultado = new ArrayList<>();
+		for (Map.Entry<String, List<DetallePedido>> entry : detallesPorIdentificador.entrySet()) {
+			String identificador = entry.getKey();
+			List<DetallePedido> detallesLista = entry.getValue();
 
-	        List<DetallePedidoOutputDTO> detallesDTO = new ArrayList<>();
-	        for (DetallePedido detalle : detallesLista) {
-	            detallesDTO.add(DetallePedidoMapper.toOutputDto(detalle));
-	        }
+			List<DetallePedidoOutputDTO> detallesDTO = new ArrayList<>();
+			for (DetallePedido detalle : detallesLista) {
+				detallesDTO.add(DetallePedidoMapper.toOutputDto(detalle));
+			}
 
-	        Map<String, Object> grupo = new HashMap<>();
-	        grupo.put("mesa", identificador);
-	        grupo.put("detalles", detallesDTO);
-	        resultado.add(grupo);
-	    }
+			Map<String, Object> grupo = new HashMap<>();
+			grupo.put("mesa", identificador);
+			grupo.put("detalles", detallesDTO);
+			resultado.add(grupo);
+		}
 
-	    return resultado;
+		return resultado;
 	}
-
 
 }

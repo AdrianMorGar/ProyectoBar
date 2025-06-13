@@ -9,13 +9,13 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class PlatoDTO {
-    private Integer id;
-    private String nombrePlato;
-    private String descripcion;
-    private Double precio;
-    private Categoria categoria;
-    private Boolean disponible;
-    private Boolean habilitado;
-    private String imagen;
-    private Integer tipoId;
+	private Integer id;
+	private String nombrePlato;
+	private String descripcion;
+	private Double precio;
+	private Categoria categoria;
+	private Boolean disponible;
+	private Boolean habilitado;
+	private String imagen;
+	private Integer tipoId;
 }

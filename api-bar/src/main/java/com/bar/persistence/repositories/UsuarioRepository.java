@@ -9,5 +9,6 @@ import com.bar.persistence.entities.Usuario;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
 	Optional<Usuario> findByNombre(String nombre);
+
 	List<Usuario> findByHabilitadoTrue();
 }

@@ -1,6 +1,5 @@
 package com.bar.persistence.entities;
 
-
 import com.bar.persistence.entities.enums.EstadoPedido;
 
 import jakarta.persistence.Column;
@@ -24,19 +23,19 @@ import lombok.Setter;
 @NoArgsConstructor
 public class DetallePedido {
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
-    @Column(nullable = false)
-    private Integer cantidad;
-    
-    @Column(columnDefinition = "VARCHAR(255)")
-    private String notas;
-    
-    @Enumerated(EnumType.STRING)
-    private EstadoPedido estado;
-    
-    @ManyToOne
+	@Column(nullable = false)
+	private Integer cantidad;
+
+	@Column(columnDefinition = "VARCHAR(255)")
+	private String notas;
+
+	@Enumerated(EnumType.STRING)
+	private EstadoPedido estado;
+
+	@ManyToOne
 	@JoinColumn(name = "pedido_id", referencedColumnName = "id")
 	private Pedido pedido;
 

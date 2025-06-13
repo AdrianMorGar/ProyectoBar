@@ -8,8 +8,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class DetalleVentaDTO {
-    private int id;
-    private int cantidad;
-    private double precioUnitario;
-    private String plato;
+	private int id;
+	private int cantidad;
+	private double precioUnitario;
+	private String plato;
 }

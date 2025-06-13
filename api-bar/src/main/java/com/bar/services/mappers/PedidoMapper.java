@@ -12,132 +12,129 @@ import java.util.List;
 
 public class PedidoMapper {
 
-    public static PedidoDTO toDto(Pedido pedido) {
-        PedidoDTO dto = new PedidoDTO();
-        dto.setId(pedido.getId());
-        dto.setNombreCliente(pedido.getNombreCliente());
-        dto.setMesa(pedido.getMesa());
-        dto.setFecha(pedido.getFecha());
-        dto.setPagado(pedido.getPagado());
-        
-        if (pedido.getUsuario() != null) {
-            dto.setUsuarioId(pedido.getUsuario().getId());
-        }
+	public static PedidoDTO toDto(Pedido pedido) {
+		PedidoDTO dto = new PedidoDTO();
+		dto.setId(pedido.getId());
+		dto.setNombreCliente(pedido.getNombreCliente());
+		dto.setMesa(pedido.getMesa());
+		dto.setFecha(pedido.getFecha());
+		dto.setPagado(pedido.getPagado());
 
-        double total = 0.0;
-        if (pedido.getDetalles() != null) {
-            for (DetallePedido detalle : pedido.getDetalles()) {
-                if (detalle.getEstado() != EstadoPedido.CANCELADO && detalle.getPlato() != null) {
-                    total += detalle.getCantidad() * detalle.getPlato().getPrecio();
-                }
-            }
-        }
-        dto.setTotal(total);
+		if (pedido.getUsuario() != null) {
+			dto.setUsuarioId(pedido.getUsuario().getId());
+		}
 
-        if (pedido.getDetalles() != null) {
-            dto.setDetalles(DetallePedidoMapper.toOutputDtos(pedido.getDetalles()));
-        } else {
-            dto.setDetalles(new ArrayList<>());
-        }
+		double total = 0.0;
+		if (pedido.getDetalles() != null) {
+			for (DetallePedido detalle : pedido.getDetalles()) {
+				if (detalle.getEstado() != EstadoPedido.CANCELADO && detalle.getPlato() != null) {
+					total += detalle.getCantidad() * detalle.getPlato().getPrecio();
+				}
+			}
+		}
+		dto.setTotal(total);
 
-        return dto;
-    }
+		if (pedido.getDetalles() != null) {
+			dto.setDetalles(DetallePedidoMapper.toOutputDtos(pedido.getDetalles()));
+		} else {
+			dto.setDetalles(new ArrayList<>());
+		}
 
-    public static Pedido toEntity(PedidoDTO dto) {
-        Pedido pedido = new Pedido();
-        pedido.setId(dto.getId());
-        pedido.setNombreCliente(dto.getNombreCliente());
-        pedido.setMesa(dto.getMesa());
-        pedido.setFecha(dto.getFecha());
-        pedido.setPagado(dto.getPagado());
-        return pedido;
-    }
+		return dto;
+	}
 
-    public static List<PedidoDTO> toDtos(List<Pedido> pedidos) {
-        List<PedidoDTO> pedidoDTOs = new ArrayList<>();
-        for (Pedido p : pedidos) {
-            pedidoDTOs.add(toDto(p));
-        }
-        return pedidoDTOs;
-    }
+	public static Pedido toEntity(PedidoDTO dto) {
+		Pedido pedido = new Pedido();
+		pedido.setId(dto.getId());
+		pedido.setNombreCliente(dto.getNombreCliente());
+		pedido.setMesa(dto.getMesa());
+		pedido.setFecha(dto.getFecha());
+		pedido.setPagado(dto.getPagado());
+		return pedido;
+	}
 
-    public static PedidoVentaDTO toPedidoVentaDTO(Pedido pedido) {
-        PedidoVentaDTO dto = new PedidoVentaDTO();
-        dto.setId(pedido.getId());
+	public static List<PedidoDTO> toDtos(List<Pedido> pedidos) {
+		List<PedidoDTO> pedidoDTOs = new ArrayList<>();
+		for (Pedido p : pedidos) {
+			pedidoDTOs.add(toDto(p));
+		}
+		return pedidoDTOs;
+	}
 
-        // Total del pedido
-        double total = 0.0;
-        if (pedido.getDetalles() != null) {
-            for (DetallePedido detalle : pedido.getDetalles()) {
-                if (detalle.getEstado() != EstadoPedido.CANCELADO && detalle.getPlato() != null) {
-                    total += detalle.getCantidad() * detalle.getPlato().getPrecio();
-                }
-            }
-        }
-        dto.setTotal(total);
+	public static PedidoVentaDTO toPedidoVentaDTO(Pedido pedido) {
+		PedidoVentaDTO dto = new PedidoVentaDTO();
+		dto.setId(pedido.getId());
 
-        // Detalles individuales
-        List<DetalleVentaDTO> detallesDTO = new ArrayList<>();
-        if (pedido.getDetalles() != null) {
-            for (DetallePedido detalle : pedido.getDetalles()) {
-                if (detalle.getEstado() != EstadoPedido.CANCELADO && detalle.getPlato() != null) {
-                    DetalleVentaDTO detalleDTO = new DetalleVentaDTO();
-                    detalleDTO.setId(detalle.getId());
-                    detalleDTO.setCantidad(detalle.getCantidad());
-                    detalleDTO.setPrecioUnitario(detalle.getPlato().getPrecio());
-                    detalleDTO.setPlato(detalle.getPlato().getNombrePlato());
-                    detallesDTO.add(detalleDTO);
-                }
-            }
-        }
-        dto.setDetalles(detallesDTO);
-        dto.setMesa(pedido.getMesa());
-        dto.setNombreCliente(pedido.getNombreCliente());
+		double total = 0.0;
+		if (pedido.getDetalles() != null) {
+			for (DetallePedido detalle : pedido.getDetalles()) {
+				if (detalle.getEstado() != EstadoPedido.CANCELADO && detalle.getPlato() != null) {
+					total += detalle.getCantidad() * detalle.getPlato().getPrecio();
+				}
+			}
+		}
+		dto.setTotal(total);
 
-        if (pedido.getUsuario() != null) {
-            dto.setTrabajador(pedido.getUsuario().getNombre());
-        } else {
-            dto.setTrabajador("Desconocido");
-        }
+		List<DetalleVentaDTO> detallesDTO = new ArrayList<>();
+		if (pedido.getDetalles() != null) {
+			for (DetallePedido detalle : pedido.getDetalles()) {
+				if (detalle.getEstado() != EstadoPedido.CANCELADO && detalle.getPlato() != null) {
+					DetalleVentaDTO detalleDTO = new DetalleVentaDTO();
+					detalleDTO.setId(detalle.getId());
+					detalleDTO.setCantidad(detalle.getCantidad());
+					detalleDTO.setPrecioUnitario(detalle.getPlato().getPrecio());
+					detalleDTO.setPlato(detalle.getPlato().getNombrePlato());
+					detallesDTO.add(detalleDTO);
+				}
+			}
+		}
+		dto.setDetalles(detallesDTO);
+		dto.setMesa(pedido.getMesa());
+		dto.setNombreCliente(pedido.getNombreCliente());
 
-        return dto;
-    }
+		if (pedido.getUsuario() != null) {
+			dto.setTrabajador(pedido.getUsuario().getNombre());
+		} else {
+			dto.setTrabajador("Desconocido");
+		}
 
+		return dto;
+	}
 
-    public static List<PedidoVentaDTO> toPedidoVentaDTOs(List<Pedido> pedidos) {
-        List<PedidoVentaDTO> resultado = new ArrayList<>();
-        for (Pedido pedido : pedidos) {
-            resultado.add(toPedidoVentaDTO(pedido));
-        }
-        return resultado;
-    }
-    
-    public static PedidoDTO toDtoFiltrado(Pedido pedido) {
-        PedidoDTO dto = new PedidoDTO();
-        dto.setId(pedido.getId());
-        dto.setNombreCliente(pedido.getNombreCliente());
-        dto.setMesa(pedido.getMesa());
-        dto.setFecha(pedido.getFecha());
-        dto.setPagado(pedido.getPagado());
+	public static List<PedidoVentaDTO> toPedidoVentaDTOs(List<Pedido> pedidos) {
+		List<PedidoVentaDTO> resultado = new ArrayList<>();
+		for (Pedido pedido : pedidos) {
+			resultado.add(toPedidoVentaDTO(pedido));
+		}
+		return resultado;
+	}
 
-        double total = 0.0;
-        List<DetallePedido> detallesValidos = new ArrayList<>();
+	public static PedidoDTO toDtoFiltrado(Pedido pedido) {
+		PedidoDTO dto = new PedidoDTO();
+		dto.setId(pedido.getId());
+		dto.setNombreCliente(pedido.getNombreCliente());
+		dto.setMesa(pedido.getMesa());
+		dto.setFecha(pedido.getFecha());
+		dto.setPagado(pedido.getPagado());
 
-        if (pedido.getDetalles() != null) {
-            for (DetallePedido detalle : pedido.getDetalles()) {
-                if (detalle.getEstado() != EstadoPedido.CANCELADO) {
-                    detallesValidos.add(detalle);
-                    if (detalle.getPlato() != null) {
-                        total += detalle.getCantidad() * detalle.getPlato().getPrecio();
-                    }
-                }
-            }
-        }
+		double total = 0.0;
+		List<DetallePedido> detallesValidos = new ArrayList<>();
 
-        dto.setTotal(total);
-        dto.setDetalles(DetallePedidoMapper.toOutputDtos(detallesValidos));
+		if (pedido.getDetalles() != null) {
+			for (DetallePedido detalle : pedido.getDetalles()) {
+				if (detalle.getEstado() != EstadoPedido.CANCELADO) {
+					detallesValidos.add(detalle);
+					if (detalle.getPlato() != null) {
+						total += detalle.getCantidad() * detalle.getPlato().getPrecio();
+					}
+				}
+			}
+		}
 
-        return dto;
-    }
+		dto.setTotal(total);
+		dto.setDetalles(DetallePedidoMapper.toOutputDtos(detallesValidos));
+
+		return dto;
+	}
 
 }

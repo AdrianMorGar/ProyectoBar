@@ -11,13 +11,13 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class DetallePedidoOutputDTO {
-    private Integer id;
-    private Integer cantidad;
-    private String notas;
-    private Double precioUnitario;
-    private String plato;
-    private EstadoPedido estado;
-    @JsonIgnore 
-    private Integer mesa;
+	private Integer id;
+	private Integer cantidad;
+	private String notas;
+	private Double precioUnitario;
+	private String plato;
+	private EstadoPedido estado;
+	@JsonIgnore
+	private Integer mesa;
 
 }

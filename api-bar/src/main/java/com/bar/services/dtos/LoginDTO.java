@@ -1,7 +1,5 @@
 package com.bar.services.dtos;
 
-//package com.bar.services.dtos;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,6 +8,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class LoginDTO {
- private String username;
- private String password;
+	private String username;
+	private String password;
 }

@@ -26,32 +26,32 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class Plato {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
-    @Column(name = "nombre_plato", length = 255, nullable = false)
-    private String nombrePlato;
+	@Column(name = "nombre_plato", length = 255, nullable = false)
+	private String nombrePlato;
 
-    private String descripcion;
+	private String descripcion;
 
-    @Column(columnDefinition = "DECIMAL(8,2)", nullable = false)
-    private Double precio;
+	@Column(columnDefinition = "DECIMAL(8,2)", nullable = false)
+	private Double precio;
 
-    @Enumerated(EnumType.STRING)
-    private Categoria categoria;
+	@Enumerated(EnumType.STRING)
+	private Categoria categoria;
 
-    private Boolean disponible;
-    private Boolean habilitado;
+	private Boolean disponible;
+	private Boolean habilitado;
 
-    @Column(columnDefinition="LONGTEXT")
-    private String imagen;
-    
-    @OneToMany(mappedBy = "plato")
-    @JsonIgnore
-    private List<DetallePedido> detalles;
-    
-    @ManyToOne
+	@Column(columnDefinition = "LONGTEXT")
+	private String imagen;
+
+	@OneToMany(mappedBy = "plato")
+	@JsonIgnore
+	private List<DetallePedido> detalles;
+
+	@ManyToOne
 	@JoinColumn(name = "tipo_id", referencedColumnName = "id")
-    private Tipo tipo;
+	private Tipo tipo;
 }

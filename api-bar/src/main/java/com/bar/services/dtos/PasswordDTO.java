@@ -8,6 +8,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class PasswordDTO {
-    private String vieja;
-    private String nueva;
+	private String vieja;
+	private String nueva;
 }

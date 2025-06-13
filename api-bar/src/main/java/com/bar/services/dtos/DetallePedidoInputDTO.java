@@ -9,10 +9,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class DetallePedidoInputDTO {
-    private Integer id;
-    private Integer pedidoId;
-    private Integer platoId;
-    private Integer cantidad;
-    private String notas;
-    private EstadoPedido estado;
+	private Integer id;
+	private Integer pedidoId;
+	private Integer platoId;
+	private Integer cantidad;
+	private String notas;
+	private EstadoPedido estado;
 }

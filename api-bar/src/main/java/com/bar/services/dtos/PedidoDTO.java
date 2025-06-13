@@ -13,15 +13,15 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class PedidoDTO {
-    private Integer id;
-    private String nombreCliente;
-    private Integer mesa;
-    private LocalDateTime fecha;
-    private Boolean pagado;
-    private Double total;
+	private Integer id;
+	private String nombreCliente;
+	private Integer mesa;
+	private LocalDateTime fecha;
+	private Boolean pagado;
+	private Double total;
 
-    @JsonProperty("usuario_id")
-    private Integer usuarioId;
-    
-    private List<DetallePedidoOutputDTO> detalles;
+	@JsonProperty("usuario_id")
+	private Integer usuarioId;
+
+	private List<DetallePedidoOutputDTO> detalles;
 }

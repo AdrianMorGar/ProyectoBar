@@ -8,7 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import org.springframework.web.filter.OncePerRequestFilter; // [cite: 1071]
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
@@ -20,49 +20,46 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Component
-public class JwtRequestFilter extends OncePerRequestFilter { // [cite: 1071]
+public class JwtRequestFilter extends OncePerRequestFilter {
 
- @Autowired
- private JwtUtils jwtUtils; // [cite: 1071]
+	@Autowired
+	private JwtUtils jwtUtils;
 
- @Autowired
- private UserSecurityService userSecurityService; // [cite: 1071]
+	@Autowired
+	private UserSecurityService userSecurityService;
 
- @Override
- protected void doFilterInternal(HttpServletRequest request,
-                                 HttpServletResponse response,
-                                 FilterChain filterChain) throws ServletException, IOException { // [cite: 1072]
+	@Override
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+			throws ServletException, IOException {
 
-     final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION); // [cite: 1073]
+		final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-     if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-         filterChain.doFilter(request, response);
-         return;
-     }
+		if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+			filterChain.doFilter(request, response);
+			return;
+		}
 
-     String jwt = authHeader.substring(7); // "Bearer ".length()
-     DecodedJWT decodedJWT;
+		String jwt = authHeader.substring(7);
+		DecodedJWT decodedJWT;
 
-     try {
-         decodedJWT = jwtUtils.validateToken(jwt); // [cite: 1073]
-     } catch (JWTVerificationException e) {
-         filterChain.doFilter(request, response);
-         return;
-     }
+		try {
+			decodedJWT = jwtUtils.validateToken(jwt);
+		} catch (JWTVerificationException e) {
+			filterChain.doFilter(request, response);
+			return;
+		}
 
-     String username = jwtUtils.getUsernameFromToken(decodedJWT); // [cite: 1074]
+		String username = jwtUtils.getUsernameFromToken(decodedJWT);
 
-     if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-         UserDetails userDetails = this.userSecurityService.loadUserByUsername(username);
+		if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+			UserDetails userDetails = this.userSecurityService.loadUserByUsername(username);
 
-         // If token is valid, configure Spring Security to manually set authentication
-          if (decodedJWT != null) { // Basic check, could add more specific validation if needed
-             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                     userDetails, null, userDetails.getAuthorities());
-             // No need to set details from request as it's stateless
-             SecurityContextHolder.getContext().setAuthentication(authToken); // [cite: 1074]
-         }
-     }
-     filterChain.doFilter(request, response);
- }
+			if (decodedJWT != null) {
+				UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,
+						null, userDetails.getAuthorities());
+				SecurityContextHolder.getContext().setAuthentication(authToken);
+			}
+		}
+		filterChain.doFilter(request, response);
+	}
 }

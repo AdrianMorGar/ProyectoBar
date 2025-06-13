@@ -11,45 +11,33 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
 
-import com.bar.persistence.entities.Usuario; // Assuming Usuario implements UserDetails
+import com.bar.persistence.entities.Usuario;
 
 @Component
 public class JwtUtils {
 
- @Value("${jwt.secret.key}") // You'll define this in application.properties
- private String secretKey;
+	@Value("${jwt.secret.key}")
+	private String secretKey;
 
- @Value("${jwt.time.expiration}") // You'll define this in application.properties
- private String timeExpiration;
+	@Value("${jwt.time.expiration}")
+	private String timeExpiration;
 
- // Create JWT Token [cite: 1061]
- public String createToken(Authentication authentication) {
-     Usuario usuario = (Usuario) authentication.getPrincipal(); // Get the authenticated user
-     String username = usuario.getUsername();
-     // String roles = usuario.getAuthorities().stream()
-     // .map(GrantedAuthority::getAuthority)
-     // .collect(Collectors.joining(",")); // Comma-separated roles
+	public String createToken(Authentication authentication) {
+		Usuario usuario = (Usuario) authentication.getPrincipal();
+		String username = usuario.getUsername();
 
-     Algorithm algorithm = Algorithm.HMAC256(this.secretKey); // [cite: 1060]
-     return JWT.create()
-             .withIssuer("api-bar") // [cite: 1062]
-             .withSubject(username)
-             // .withClaim("roles", roles) // Include roles in the token
-             .withIssuedAt(new Date())
-             .withExpiresAt(new Date(System.currentTimeMillis() + Long.parseLong(timeExpiration))) // [cite: 1063]
-             .sign(algorithm);
- }
+		Algorithm algorithm = Algorithm.HMAC256(this.secretKey);
+		return JWT.create().withIssuer("api-bar").withSubject(username).withIssuedAt(new Date())
+				.withExpiresAt(new Date(System.currentTimeMillis() + Long.parseLong(timeExpiration))).sign(algorithm);
+	}
 
- // Validate JWT Token [cite: 1069]
- public DecodedJWT validateToken(String token) throws JWTVerificationException {
-     Algorithm algorithm = Algorithm.HMAC256(this.secretKey);
-     JWTVerifier verifier = JWT.require(algorithm)
-             .withIssuer("api-bar")
-             .build();
-     return verifier.verify(token);
- }
+	public DecodedJWT validateToken(String token) throws JWTVerificationException {
+		Algorithm algorithm = Algorithm.HMAC256(this.secretKey);
+		JWTVerifier verifier = JWT.require(algorithm).withIssuer("api-bar").build();
+		return verifier.verify(token);
+	}
 
- public String getUsernameFromToken(DecodedJWT decodedJWT) {
-     return decodedJWT.getSubject();
- }
+	public String getUsernameFromToken(DecodedJWT decodedJWT) {
+		return decodedJWT.getSubject();
+	}
 }

@@ -11,8 +11,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class UsuarioInputDTO {
 	private Integer id;
-    private String nombre;
-    private String contrasena;
-    private Boolean habilitado;
-    private Rol rol;
+	private String nombre;
+	private String contrasena;
+	private Boolean habilitado;
+	private Rol rol;
 }

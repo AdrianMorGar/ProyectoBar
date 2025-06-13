@@ -11,6 +11,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class UsuarioOutputDTO {
 	private Integer id;
-    private String nombre;
-    private Rol rol;
+	private String nombre;
+	private Rol rol;
 }
