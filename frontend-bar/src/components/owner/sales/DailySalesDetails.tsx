@@ -5,6 +5,9 @@ import { fetchDailySalesDetails } from '../../../api';
 interface SalesDetail {
   id: number;
   total: number;
+  mesa: number | null;
+  nombreCliente: string | null;
+  trabajador: string;
   detalles: {
     id: number;
     cantidad: number;
@@ -41,7 +44,6 @@ const DailySalesDetails: React.FC = () => {
     loadSalesDetails();
   }, [parsedYear, parsedMonth, parsedDay]);
 
-  // Calcular el total del día
   const dailyTotal = salesDetails.reduce((sum, pedido) => sum + pedido.total, 0);
 
   const getMonthName = (monthNumber: number): string => {
@@ -56,15 +58,17 @@ const DailySalesDetails: React.FC = () => {
     <div className="container">
       <h2 className="title">Detalles de Ventas del {`${parsedDay} de ${getMonthName(parsedMonth)} ${parsedYear}`}</h2>
 
-      <ul className="salesList">
+      <ul className="daily-sales-details-list">
         {salesDetails.length > 0 ? (
           salesDetails.map((pedido) => (
-            <li key={pedido.id} className="salesItem">
-              <h3 className="salesTitle">Pedido #{pedido.id} - Total: ${pedido.total.toFixed(2)}</h3>
-              <ul className="detailsList">
+            <li key={pedido.id} className="sales-item">
+              <h3 className="sales-title">Pedido #{pedido.id} - Total: {pedido.total.toFixed(2)} €</h3>
+              <p><strong>Trabajador:</strong> {pedido.trabajador}</p>
+              <p><strong>Atendido en:</strong> {pedido.mesa ? `Mesa ${pedido.mesa}` : pedido.nombreCliente || 'Desconocido'}</p>
+              <ul className="details-list">
                 {pedido.detalles.map((detalle) => (
-                  <li key={detalle.id} className="detailItem">
-                    <span>{detalle.plato} (Cantidad: {detalle.cantidad}), Precio Unitario: ${detalle.precioUnitario.toFixed(2)}</span>
+                  <li key={detalle.id} className="detail-item">
+                    <span>{detalle.plato} (Cantidad: {detalle.cantidad}), Precio Unitario: {detalle.precioUnitario.toFixed(2)} €</span>
                   </li>
                 ))}
               </ul>
@@ -75,7 +79,7 @@ const DailySalesDetails: React.FC = () => {
         )}
       </ul>
 
-      <div className="total">Total del Día: ${dailyTotal.toFixed(2)}</div>
+      <div className="total">Total del Día: {dailyTotal.toFixed(2)} €</div>
     </div>
   );
 };

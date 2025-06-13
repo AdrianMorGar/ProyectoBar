@@ -12,19 +12,18 @@ const AddWorkerForm: React.FC = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  // Añadimos trabajadores
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       await createUser({ ...formData });
-      alert('Trabajador añadido exitosamente');
+      window.location.href = ('/dueno/trabajadores');
     } catch (error) {
       alert('Hubo un error al añadir el trabajador');
     }
   };
 
   return (
-    <div className="container">
+    <div className="add-worker-form-container">
       <h2 className="title">Añadir Nuevo Trabajador</h2>
       <form onSubmit={handleSubmit}>
         <div className="formGroup">
@@ -47,7 +46,7 @@ const AddWorkerForm: React.FC = () => {
             required
           />
         </div>
-        <button type="submit" className="submitButton">
+        <button type="submit" className="btn btn-primary submit-button">
           Añadir Trabajador
         </button>
       </form>

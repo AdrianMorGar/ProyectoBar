@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+// const API_URL = 'https://rubber-stesha-adrianmorgar-e368679c.koyeb.app/bar/api';
 const API_URL = 'http://localhost:8080/bar/api';
 
 // Usuarios
@@ -31,7 +32,7 @@ export const changePassword = async (userId: number, passwordData: { vieja: stri
   await axios.put(`${API_URL}/usuarios/${userId}/password`, passwordData);
 };
 
-// Platos
+// Platos (Públicos)
 export const fetchDishes = async () => {
   const response = await axios.get(`${API_URL}/platos`);
   return response.data;
@@ -42,6 +43,7 @@ export const fetchDishById = async (dishId: number) => {
   return response.data;
 };
 
+// Platos (Protegidos - DUENO)
 export const createDish = async (dishData: any) => {
   const response = await axios.post(`${API_URL}/platos`, dishData);
   return response.data;
@@ -60,12 +62,13 @@ export const toggleDishDisponibility = async (dishId: number) => {
   await axios.patch(`${API_URL}/platos/${dishId}/toggle/Disponible`);
 };
 
+// Público
 export const searchDishesByName = async (name: string) => {
   const response = await axios.get(`${API_URL}/platos/buscar?nombre=${name}`);
   return response.data;
 };
 
-// Tipos de platos
+// Tipos de platos (Públicos)
 export const fetchTypes = async () => {
   const response = await axios.get(`${API_URL}/tipos`);
   return response.data;
@@ -76,6 +79,7 @@ export const fetchTypeById = async (typeId: number) => {
   return response.data;
 };
 
+// Tipos de platos (Protegidos - DUENO)
 export const createType = async (typeData: any) => {
   const response = await axios.post(`${API_URL}/tipos`, typeData);
   return response.data;
@@ -90,7 +94,7 @@ export const deleteType = async (typeId: number) => {
   await axios.delete(`${API_URL}/tipos/${typeId}`);
 };
 
-// Pedidos
+// Pedidos (Protegidos - DUENO/TRABAJADOR)
 export const fetchOrders = async () => {
   const response = await axios.get(`${API_URL}/pedidos`);
   return response.data;
@@ -111,17 +115,18 @@ export const createOrder = async (orderData: any) => {
   return response.data;
 };
 
-export const deleteOrder = async (orderId: number) => {
-  await axios.delete(`${API_URL}/pedidos/${orderId}`);
-};
-
 export const updateOrder = async (orderId: number, orderData: any) => {
   const response = await axios.put(`${API_URL}/pedidos/${orderId}`, orderData);
   return response.data;
 };
 
+// Pedidos (Protegidos - DUENO)
+export const deleteOrder = async (orderId: number) => {
+  await axios.delete(`${API_URL}/pedidos/${orderId}`);
+};
+
 interface MonthlySales {
-  [key: string]: number; // Clave: número de mes (como string), Valor: total de ventas (número)
+  [key: string]: number;
 }
 
 export const fetchDailySalesDetails = async (year: number, month: number, day: number) => {
@@ -139,18 +144,18 @@ export const fetchMonthlySalesByYear = async (year: number): Promise<MonthlySale
   return response.data;
 };
 
+// Pedidos (Protegidos - DUENO/TRABAJADOR)
 export const fetchActiveOrdersForTable = async (tableNumber: number) => {
   const response = await axios.get(`${API_URL}/pedidos/activos/${tableNumber}`);
   return response.data;
 };
 
-export const fetchActiveOrders  = async () => {
+export const fetchActiveOrders = async () => {
   const response = await axios.get(`${API_URL}/pedidos`);
   return response.data;
 };
 
-
-// Detalles de pedidos
+// Detalles de pedidos (Protegidos - DUENO/TRABAJADOR)
 export const fetchOrderDetails = async () => {
   const response = await axios.get(`${API_URL}/detalles-pedido`);
   return response.data;
@@ -200,5 +205,3 @@ export const fetchDrinkOrders = async () => {
   const response = await axios.get(`${API_URL}/detalles-pedido/bebidas`);
   return response.data;
 };
-
-

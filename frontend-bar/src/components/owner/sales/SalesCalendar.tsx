@@ -11,8 +11,6 @@ const SalesCalendar: React.FC = () => {
     const loadSales = async () => {
       try {
         const data = await fetchMonthlySalesByYear(year);
-
-        // Calcular el total anual
         const salesMap = new Map(Object.entries(data).map(([month, total]) => [parseInt(month), total]));
         setMonthlySales(salesMap);
         const yearlyTotal = Array.from(salesMap.values()).reduce((sum, value) => sum + value, 0);
@@ -29,38 +27,40 @@ const SalesCalendar: React.FC = () => {
   };
 
   return (
-    <div className="container">
-      <h2 className="title">Ganancias del Año {year}</h2>
-
-      {/* Botones para cambiar de año */}
-      <div className="yearButtons">
-        <button className="yearButton" onClick={() => changeYear(-1)}>
-          {'<'} Año Anterior
-        </button>
-        <button className="yearButton" onClick={() => changeYear(1)}>
-          Siguiente Año {'>'}
-        </button>
+    <div className="sales-page-container">
+      <div className="sales-header">
+        <h2 className="title">Ganancias del Año {year}</h2>
+        <div className="date-navigation">
+          <button className="btn btn-default" onClick={() => changeYear(-1)}>
+            {'<'} Año Anterior
+          </button>
+          <button className="btn btn-default" onClick={() => changeYear(1)}>
+            Siguiente Año {'>'}
+          </button>
+        </div>
       </div>
-
-      {/* Lista de meses y ganancias */}
-      <ul className="monthList">
+      <ul className="sales-list">
         {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
-          <li key={month} className="monthItem">
-            <span className="monthName">
-              {new Date(year, month - 1).toLocaleString('default', { month: 'long' })}
-            </span>
-            <div className="monthDetails">
-              <span>${monthlySales.get(month)?.toFixed(2) || '0.00'}</span>
-              <Link to={`detalles/${year}/${month}`} className="detailsButton">
-                Detalles
-              </Link>
-            </div>
+          <li key={month} className="sales-list-item-wrapper">
+            <Link
+              to={`detalles/${year}/${month}`}
+              className="sales-item-link-wrapper"
+            >
+              <div className="sales-list-item">
+                <div className="item-header">
+                  <span className="monthName">
+                    {new Date(year, month - 1).toLocaleString('es-ES', { month: 'long' })}
+                  </span>
+                </div>
+                <div className="monthDetails">
+                  <span className="item-amount">{monthlySales.get(month)?.toFixed(2) || '0.00'} €</span>
+                </div>
+              </div>
+            </Link>
           </li>
         ))}
       </ul>
-
-      {/* Total anual */}
-      <div className="total">Total del Año: ${totalYearlySales.toFixed(2)}</div>
+      <div className="total-sales">Total del Año: {totalYearlySales.toFixed(2)} €</div>
     </div>
   );
 };

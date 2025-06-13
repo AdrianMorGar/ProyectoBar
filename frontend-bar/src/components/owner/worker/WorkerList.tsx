@@ -35,31 +35,31 @@ const WorkerList: React.FC = () => {
       setWorkers((prevWorkers) =>
         prevWorkers.filter((worker) => worker.id !== workerId)
       );
-      alert('Trabajador deshabilitado exitosamente');
     } catch (error) {
       alert('Hubo un error al deshabilitar al trabajador.');
     }
   };
 
   return (
-    <div className="container">
-      <h2 className="title">Lista de Trabajadores</h2>
-      <Link to="nuevo" className="addButton">
-        Añadir Trabajador
-      </Link>
-
+    <div className="worker-list-container">
+      <div className="list-header">
+        <h2>Gestión de Trabajadores</h2>
+        <Link to="nuevo" className="btn btn-success">
+          Añadir Trabajador
+        </Link>
+      </div>
       <ul className="workerList">
         {workers.map((worker) => (
-          <li key={worker.id} className="workerItem">
-            <span className="workerName">{worker.nombre}</span>
+          <li key={worker.id} className="worker-item">
+            <span className="worker-name">{worker.nombre}</span>
             <div className="actions">
               <button
                 onClick={() => handleDelete(worker.id, worker.nombre)}
-                className="actionButton disableButton"
+                className="btn btn-sm btn-danger"
               >
                 Deshabilitar
               </button>
-              <Link to={`editar/${worker.id}`} className="actionButton updateButton">
+              <Link to={`editar/${worker.id}`} className="btn btn-sm btn-info">
                 Actualizar
               </Link>
             </div>

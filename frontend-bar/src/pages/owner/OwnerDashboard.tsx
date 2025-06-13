@@ -1,31 +1,23 @@
 import React from 'react';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
+import LogoutButton from '../../context/LogoutButton';
 
 const OwnerDashboard: React.FC = () => {
   return (
-    <div>
-      <Header title="Panel del Dueño" />
-      <div style={{ padding: '20px' }}>
-        <h2>Bienvenido, Dueño</h2>
-        <p>Desde aquí puedes gestionar tu negocio:</p>
-        <ul>
-          <li>
-            <Link to="carta">Gestionar Carta</Link>
-          </li>
-          <li>
-            <Link to="trabajadores">Gestionar Trabajadores</Link>
-          </li>
-          <li>
-            <Link to="ventas">Ver Ventas</Link>
-          </li>
-          <li>
-            <Link to="perfil">Actualizar Perfil</Link>
-          </li>
-        </ul>
-      </div>
-      <Footer />
+    <div className="header-section center owner-nav">
+      <NavLink to="/dueno/carta" className={({ isActive }) => isActive ? "active owner-nav-link" : "owner-nav-link"}>
+        Gestionar Carta
+      </NavLink>
+      <NavLink to="/dueno/trabajadores" className={({ isActive }) => isActive ? "active owner-nav-link" : "owner-nav-link"}>
+        Trabajadores
+      </NavLink>
+      <NavLink to="/dueno/ventas" className={({ isActive }) => isActive ? "active owner-nav-link" : "owner-nav-link"}>
+        Ventas
+      </NavLink>
+      <NavLink to="/dueno/perfil" className={({ isActive }) => isActive ? "active owner-nav-link" : "owner-nav-link"}>
+        Mi Perfil
+      </NavLink>
+      <LogoutButton />
     </div>
   );
 };

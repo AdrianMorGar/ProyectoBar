@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { fetchUserById, updateUser } from '../../../api';
+import { useAuth } from '../../../context/AuthContext';
 
 interface FormData {
   id: number;
@@ -16,7 +17,8 @@ const UpdateWorkerForm: React.FC<{ workerId: number }> = ({ workerId }) => {
     habilitado: true,
   });
 
-  // Captura de datos seleccionado por id
+  const { user, refreshLogin } = useAuth();
+
   useEffect(() => {
     const loadWorker = async () => {
       try {
@@ -34,25 +36,33 @@ const UpdateWorkerForm: React.FC<{ workerId: number }> = ({ workerId }) => {
     loadWorker();
   }, [workerId]);
 
-  // Manejador de cambios en los campos del formulario
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  // Guardar actualizacion
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       await updateUser(formData.id, formData);
-      alert('Trabajador actualizado exitosamente');
+
+      if (user && user.id === formData.id) {
+        await refreshLogin(formData.nombre, formData.contrasena);
+
+        setTimeout(() => {
+          window.location.reload();
+        }, 300); // espera mínima para que el nuevo token se propague antes de las próximas llamadas
+      } else {
+        window.location.href = ('/dueno/trabajadores');
+      }
     } catch (error) {
+      console.error(error);
       alert('Hubo un error al actualizar el trabajador');
     }
   };
 
   return (
-    <div className="container">
+    <div className="update-worker-form-container">
       <h2 className="title">Actualizar Trabajador</h2>
       <form onSubmit={handleSubmit}>
         <div className="formGroup">
@@ -75,7 +85,7 @@ const UpdateWorkerForm: React.FC<{ workerId: number }> = ({ workerId }) => {
             required
           />
         </div>
-        <button type="submit" className="submitButton">
+        <button type="submit" className="btn btn-primary submit-button">
           Actualizar Trabajador
         </button>
       </form>

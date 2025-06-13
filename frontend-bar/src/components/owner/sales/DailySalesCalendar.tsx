@@ -3,7 +3,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom';
 import { fetchDailySalesByMonth } from '../../../api';
 
 const DailySalesCalendar: React.FC = () => {
-  const navigate = useNavigate(); // Hook para navegar programáticamente
+  const navigate = useNavigate();
   const { year: yearParam, month: monthParam } = useParams<{ year: string; month: string }>();
   const [year, setYear] = useState(parseInt(yearParam || new Date().getFullYear().toString(), 10));
   const [month, setMonth] = useState(parseInt(monthParam || (new Date().getMonth() + 1).toString(), 10));
@@ -14,8 +14,6 @@ const DailySalesCalendar: React.FC = () => {
     const loadSales = async () => {
       try {
         const data = await fetchDailySalesByMonth(year, month);
-
-        // Calcular el total mensual y verlo
         const salesMap = new Map(Object.entries(data).map(([day, total]) => [parseInt(day), Number(total)]));
         setDailySales(salesMap);
         const monthlyTotal = Array.from(salesMap.values()).reduce((sum, value) => sum + value, 0);
@@ -27,7 +25,6 @@ const DailySalesCalendar: React.FC = () => {
     loadSales();
   }, [year, month]);
 
-  // Manejo de cambios de mes
   const changeMonth = (increment: number) => {
     let newMonth = month + increment;
     let newYear = year;
@@ -42,8 +39,6 @@ const DailySalesCalendar: React.FC = () => {
 
     setYear(newYear);
     setMonth(newMonth);
-
-    // Actualizar la URL al cambiar de mes
     navigate(`/dueno/ventas/detalles/${newYear}/${newMonth}`);
   };
 
@@ -56,35 +51,38 @@ const DailySalesCalendar: React.FC = () => {
   };
 
   return (
-    <div className="container">
-      <h2 className="title">Ganancias de {getMonthName(month)} {year}</h2>
-
-      {/* Botones para cambiar de mes */}
-      <div className="monthButtons">
-        <button className="monthButton" onClick={() => changeMonth(-1)}>
-          {'<'} Mes Anterior
-        </button>
-        <button className="monthButton" onClick={() => changeMonth(1)}>
-          Siguiente Mes {'>'}
-        </button>
+    <div className="sales-page-container">
+      <div className="sales-header">
+        <h2 className="title">Ganancias de {getMonthName(month)} {year}</h2>
+        <div className="date-navigation">
+          <button className="btn btn-default" onClick={() => changeMonth(-1)}>
+            {'<'} Mes Anterior
+          </button>
+          <button className="btn btn-default" onClick={() => changeMonth(1)}>
+            Siguiente Mes {'>'}
+          </button>
+        </div>
       </div>
-
-      {/* Lista de días y ganancias */}
-      <ul className="dayList">
+      <ul className="sales-list">
         {Array.from({ length: 31 }, (_, i) => i + 1).map((day) => (
-          <li key={day} className="dayItem">
-            <span className="dayName">{`${day} de ${getMonthName(month)}`}</span>
-            <div className="dayDetails">
-              <span>${dailySales.get(day)?.toFixed(2) || '0.00'}</span>
-              <Link to={`/dueno/detalles-ventas/${year}/${month}/${day}`} className="detailsButton">
-                Detalles
-              </Link>
-            </div>
+          <li key={day} className="sales-list-item-wrapper">
+            <Link
+              to={`/dueno/detalles-ventas/${year}/${month}/${day}`}
+              className="sales-item-link-wrapper"
+            >
+              <div className="sales-list-item">
+                <div className="item-header">
+                  <span className="dayName">{`${day} de ${getMonthName(month)}`}</span>
+                </div>
+                <div className="dayDetails">
+                  <span className="item-amount">{dailySales.get(day)?.toFixed(2) || '0.00'} €</span>
+                </div>
+              </div>
+            </Link>
           </li>
         ))}
       </ul>
-
-      <div className="total">Total del Mes: ${totalMonthlySales.toFixed(2)}</div>
+      <div className="total-sales">Total del Mes: {totalMonthlySales.toFixed(2)} €</div>
     </div>
   );
 };

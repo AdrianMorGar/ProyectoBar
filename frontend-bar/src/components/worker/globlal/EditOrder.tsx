@@ -165,7 +165,7 @@ const EditOrder: React.FC = () => {
   if (!mesaSeleccionada) return <p>No se ha seleccionado una mesa o cliente.</p>;
 
   return (
-    <div className="edit-order">
+    <div className="edit-order-container">
       <h1>{mesaVisual}</h1>
 
       <div className="transferencia">
@@ -177,8 +177,8 @@ const EditOrder: React.FC = () => {
               value={nuevaMesa || ''}
               onChange={(e) => setNuevaMesa(Number(e.target.value))}
             />
-            <button onClick={handleTransferTable}>Guardar</button>
-            <button onClick={() => setShowTransfer(false)}>Cancelar</button>
+            <button onClick={handleTransferTable} className="btn btn-primary">Guardar</button>
+            <button onClick={() => setShowTransfer(false)} className="btn btn-danger">Cancelar</button>
           </div>
         ) : (
           <button onClick={() => setShowTransfer(true)} className="btn btn-secondary">
@@ -191,76 +191,79 @@ const EditOrder: React.FC = () => {
         <p>No hay platos en el pedido.</p>
       ) : (
         <>
-          {detallesMesa
-            .filter((d) => d.estado !== 'Cancelado' && !d.plato.toLowerCase().includes('bebida'))
-            .map((detalle) => {
-              const temp = tempData[detalle.id] || {
-                cantidad: detalle.cantidad,
-                notas: detalle.notas || '',
-              };
+          <div className="detalle-card-grid">
+            {detallesMesa
+              .filter((d) => d.estado !== 'Cancelado' && !d.plato.toLowerCase().includes('bebida'))
+              .map((detalle) => {
+                const temp = tempData[detalle.id] || {
+                  cantidad: detalle.cantidad,
+                  notas: detalle.notas || '',
+                };
 
-              return (
-                <div key={detalle.id} className="detalle-card">
-                  <h3>{detalle.plato}</h3>
-                  <p>Estado actual: {detalle.estado}</p>
-                  <p>Precio Unitario: {detalle.precioUnitario.toFixed(2)}€</p>
+                return (
+                  <div key={detalle.id} className="detalle-card">
+                    <h3>{detalle.plato}</h3>
+                    <p>Estado actual: {detalle.estado}</p>
+                    <p>Precio Unitario: {detalle.precioUnitario.toFixed(2)}€</p>
 
-                  {editing ? (
-                    <>
-                      <QuantitySelector
-                        quantity={temp.cantidad}
-                        setQuantity={(newQty) =>
-                          setTempData((prev) => ({
-                            ...prev,
-                            [detalle.id]: {
-                              cantidad: newQty,
-                              notas: prev[detalle.id]?.notas ?? detalle.notas ?? '',
-                            },
-                          }))
-                        }
-                      />
-                      <textarea
-                        placeholder="Notas para cocina..."
-                        value={temp.notas}
-                        onChange={(e) =>
-                          setTempData((prev) => ({
-                            ...prev,
-                            [detalle.id]: {
-                              cantidad: prev[detalle.id]?.cantidad ?? detalle.cantidad,
-                              notas: e.target.value,
-                            },
-                          }))
-                        }
-                      />
-                    </>
-                  ) : (
-                    <>
-                      <p>Cantidad: {detalle.cantidad}</p>
-                      {detalle.notas && <p>Nota: {detalle.notas}</p>}
-                    </>
-                  )}
-
-                  <div className="botones">
-                    <button
-                      onClick={() => setEditing(!editing)}
-                      className={editing ? 'btn btn-danger' : 'btn btn-success'}
-                    >
-                      {editing ? 'Cancelar' : 'Editar'}
-                    </button>
-
-                    {editing && (
-                      <button onClick={handleUpdate} className="btn btn-primary">
-                        Guardar cambios
-                      </button>
+                    {editing ? (
+                      <>
+                        <QuantitySelector
+                          quantity={temp.cantidad}
+                          setQuantity={(newQty) =>
+                            setTempData((prev) => ({
+                              ...prev,
+                              [detalle.id]: {
+                                cantidad: newQty,
+                                notas: prev[detalle.id]?.notas ?? detalle.notas ?? '',
+                              },
+                            }))
+                          }
+                        />
+                        <textarea
+                          placeholder="Notas para cocina..."
+                          value={temp.notas}
+                          onChange={(e) =>
+                            setTempData((prev) => ({
+                              ...prev,
+                              [detalle.id]: {
+                                cantidad: prev[detalle.id]?.cantidad ?? detalle.cantidad,
+                                notas: e.target.value,
+                              },
+                            }))
+                          }
+                          className="notes-textarea-wide"
+                        />
+                      </>
+                    ) : (
+                      <>
+                        <p>Cantidad: {detalle.cantidad}</p>
+                        {detalle.notas && <p>Nota: {detalle.notas}</p>}
+                      </>
                     )}
 
-                    <button onClick={() => cancelarPlato(detalle.id, detalle.plato)} className="btn btn-danger">
-                      Cancelar plato
-                    </button>
+                    <div className="botones">
+                      <button
+                        onClick={() => setEditing(!editing)}
+                        className={editing ? 'btn btn-danger' : 'btn btn-success'}
+                      >
+                        {editing ? 'Cancelar' : 'Editar'}
+                      </button>
+
+                      {editing && (
+                        <button onClick={handleUpdate} className="btn btn-success">
+                          Guardar cambios
+                        </button>
+                      )}
+
+                      <button onClick={() => cancelarPlato(detalle.id, detalle.plato)} className="btn btn-danger">
+                        Cancelar plato
+                      </button>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+          </div>
 
           <div className="total">
             <strong>Total: {totalCuenta?.toFixed(2) ?? '0.00'}€</strong>

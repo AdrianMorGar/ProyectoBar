@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { fetchTypes } from '../../../api';
+import { Link, useNavigate } from 'react-router-dom';
 
 interface Type {
   id: number;
   nombreTipo: string;
+  imagen: string;
 }
 
 const Bar: React.FC = () => {
   const [types, setTypes] = useState<Type[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadInitialData = async () => {
@@ -23,44 +26,43 @@ const Bar: React.FC = () => {
 
   return (
     <div className="bar-container">
-      {/* Botones de Redirección */}
-      <div className="button-group">
-        <button onClick={() => (window.location.href = '/trabajadores/barra/NuevoPedido')} className="btn btn-success">
+      <div className="worker-action-buttons">
+        <button onClick={() => navigate('/trabajadores/barra/NuevoPedido')} className="btn btn-success">
           Añadir
         </button>
-        <button onClick={() => (window.location.href = '/trabajadores/barra/EditarPedido')} className="btn btn-primary">
+        <button onClick={() => navigate('/trabajadores/barra/EditarPedido')} className="btn btn-primary">
           Pedido
         </button>
-        <button onClick={() => (window.location.href = '/trabajadores/barra/mesas')} className="btn btn-warning">
+        <button onClick={() => navigate('/trabajadores/barra/mesas')} className="btn btn-warning">
           Mesas
         </button>
-        <button onClick={() => (window.location.href = '/trabajadores/barra/bebidas')} className="btn btn-purple">
+        <button onClick={() => navigate('/trabajadores/barra/bebidas')} className="btn btn-info">
           Bebidas
         </button>
       </div>
 
-      {/* Tipos de Plato */}
-      {types.length > 0 && (
-        <div className="type-grid">
+      {types.length > 0 ? (
+        <div className="worker-category-grid">
           {types.map((type) => (
-            <div
+            <Link
+              to={`/trabajadores/barra/tipo/${type.id}`}
               key={type.id}
-              className="type-card"
-              onClick={() => (window.location.href = `/trabajadores/barra/tipo/${type.id}`)}
+              className="worker-item-card"
             >
               <img
-                src={`https://via.placeholder.com/100?text= ${encodeURIComponent(type.nombreTipo)}`}
+                src={type.imagen}
                 alt={type.nombreTipo}
-                className="type-image"
+                className="item-image"
               />
-              <p className="type-name">{type.nombreTipo}</p>
-            </div>
+              <div className="item-info">
+                <h3 className="item-name">{type.nombreTipo}</h3>
+              </div>
+            </Link>
           ))}
         </div>
+      ) : (
+        <p className="no-types-message">No hay tipos de plato disponibles.</p>
       )}
-
-      {/* Mensaje si no hay tipos disponibles */}
-      {types.length === 0 && <p className="no-types-message">No hay tipos de plato disponibles</p>}
     </div>
   );
 };

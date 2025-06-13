@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import QuantitySelector from '../globlal/QuantitySelector';
 import { createOrder, createOrderDetail, fetchActiveOrdersForTable } from '../../../api';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../../context/AuthContext';
 
 interface AddOrder {
   id: number;
@@ -22,8 +23,9 @@ const AddOrderWaiter: React.FC = () => {
   const [inputTableNumber, setInputTableNumber] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [selectionLocked, setSelectionLocked] = useState<SelectedTable | null>(null);
-  const [editingNoteId, setEditingNoteId] = useState<number | null>(null); // <-- ID del plato editando
+  const [editingNoteId, setEditingNoteId] = useState<number | null>(null);
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   useEffect(() => {
     const storedOrder = JSON.parse(localStorage.getItem('pedido') || '[]');
@@ -77,6 +79,11 @@ const AddOrderWaiter: React.FC = () => {
 
   const handlePlaceOrder = async () => {
     try {
+      if (!user) {
+        alert('Error: No se ha podido identificar al usuario. Por favor, inicie sesión de nuevo.');
+        return;
+      }
+
       const finalTable = tableNumber ?? (inputTableNumber ? Number(inputTableNumber) : null);
       if (!finalTable) {
         alert('Por favor, asigna un número de mesa.');
@@ -91,7 +98,10 @@ const AddOrderWaiter: React.FC = () => {
       if (unpaidOrders.length > 0) {
         pedidoId = unpaidOrders[0].id;
       } else {
-        const createdOrder = await createOrder({ mesa: finalTable });
+        const createdOrder = await createOrder({ 
+          mesa: finalTable,
+          usuario_id: user.id 
+        });
         if (!createdOrder.id) {
           throw new Error('El pedido recién creado no tiene un ID válido.');
         }
@@ -134,22 +144,19 @@ const AddOrderWaiter: React.FC = () => {
   }
 
   return (
-    <div className="add-order-waiter">
-      {/* Encabezado */}
+    <div className="add-order-container">
       <div className="header">
         <h1>Pedido Actual</h1>
-        <button className="cancel-button" onClick={handleCancelOrder}>
+        <button className="btn btn-danger cancel-order-button" onClick={handleCancelOrder}>
           Cancelar Pedido
         </button>
       </div>
-
-      {/* Selección de Mesa */}
       <div className="table-selection">
         <h2>Número de Mesa</h2>
         {tableNumber !== null && selectionLocked ? (
           <div className="selected-table">
             <p>Mesa seleccionada: {tableNumber}</p>
-            <button className="remove-table-button" onClick={handleRemoveTable}>
+            <button className="btn btn-warning remove-table-button btn-sm" onClick={handleRemoveTable}>
               Eliminar Mesa
             </button>
           </div>
@@ -159,12 +166,10 @@ const AddOrderWaiter: React.FC = () => {
             placeholder="Número de mesa"
             value={inputTableNumber}
             onChange={(e) => setInputTableNumber(e.target.value)}
-            className="table-input"
+            className="input-field"
           />
         )}
       </div>
-
-      {/* Lista de Platos */}
       <div className="dishes-list">
         {AddOrders.length > 0 ? (
           AddOrders.map((dish) => (
@@ -186,21 +191,23 @@ const AddOrderWaiter: React.FC = () => {
                     onChange={(e) => updateNote(dish.id, e.target.value)}
                     className="note-textarea"
                   />
-                  <button className="save-note-button" onClick={() => setEditingNoteId(null)}>
+                  <button className="btn btn-secondary save-note-button btn-sm" onClick={() => setEditingNoteId(null)}>
                     Guardar Nota
                   </button>
                 </div>
               ) : (
                 <>
                   {dish.notas && <p className="note">{dish.notas}</p>}
-                  <button className="edit-note-button" onClick={() => setEditingNoteId(dish.id)}>
+                  <button className="btn btn-link edit-note-button btn-sm" onClick={() => setEditingNoteId(dish.id)}>
                     Editar Nota
                   </button>
                 </>
               )}
 
               <div className="remove-dish">
-                <button onClick={() => removeDish(dish.id)}>Eliminar</button>
+                <button className="remove-dish-button" onClick={() => removeDish(dish.id)}>
+                  Eliminar
+                </button>
               </div>
             </div>
           ))
@@ -208,10 +215,8 @@ const AddOrderWaiter: React.FC = () => {
           <p className="no-dishes-message">No hay platos seleccionados</p>
         )}
       </div>
-
-      {/* Botón Pedir */}
       {AddOrders.length > 0 && (tableNumber || inputTableNumber.trim() !== '') && (
-        <button className="place-order-button" onClick={handlePlaceOrder}>
+        <button className="btn btn-success place-order-button btn-lg" onClick={handlePlaceOrder}>
           Pedir
         </button>
       )}

@@ -39,8 +39,7 @@ const DrinksBoard: React.FC = () => {
   };
 
   return (
-    <div className="bebida-board">
-      <h2>Tablón de Bebidas</h2>
+    <div className="board-grid-container drinks-board">
       {orders.length > 0 ? (
         orders.map(({ mesa, detalles }) => (
           <div key={mesa} className="order-group">
@@ -50,9 +49,7 @@ const DrinksBoard: React.FC = () => {
                 <li
                   key={detail.id}
                   onClick={() => markAsServed(detail.id)}
-                  className={`order-item ${detail.estado === 'SERVIDO' ? 'served' : ''} ${
-                    detail.estado === 'PENDIENTE' ? 'pending' : ''
-                  }`}
+                  className={`order-item ${detail.estado.toLowerCase()}`}
                 >
                   <div>
                     <strong>{detail.plato}</strong> - Cantidad: {detail.cantidad}

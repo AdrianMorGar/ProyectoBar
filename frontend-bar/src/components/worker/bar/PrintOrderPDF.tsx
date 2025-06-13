@@ -15,7 +15,7 @@ const PrintOrderPDF: React.FC = () => {
       return;
     }
 
-    const selected = JSON.parse(raw); // { value: '3', type: 'mesa' | 'cliente' }
+    const selected = JSON.parse(raw);
 
     let pedido = null;
 
@@ -91,7 +91,7 @@ const PrintOrderPDF: React.FC = () => {
       });
 
       localStorage.removeItem('selectedTable');
-      window.location.href = 'http://localhost:5173/trabajadores/barra';
+      window.location.href = '/barra';
     } catch (error) {
       alert('Error al imprimir el pedido.');
     }

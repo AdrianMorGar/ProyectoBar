@@ -57,7 +57,7 @@ const ActiveTablesList: React.FC = () => {
           activeTables.map((table) => (
             <div key={table.id} className="table-item">
               <button
-                className="table-button"
+                className="btn table-button"
                 onClick={() => handleTableSelection(table.value, table.type)}
               >
                 {table.label}

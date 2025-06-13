@@ -60,7 +60,6 @@ const UserProfile: React.FC = () => {
         habilitado: true,
       });
 
-      alert('Perfil actualizado exitosamente');
       setIsEditing(false);
       setFormData((prev) => ({
         ...prev,
@@ -73,7 +72,7 @@ const UserProfile: React.FC = () => {
   };
 
   return (
-    <div className="container">
+    <div className="profile-form-container">
       <h2 className="title">Administrador</h2>
       {error && <p className="error">{error}</p>}
 
@@ -121,15 +120,15 @@ const UserProfile: React.FC = () => {
       <div className="actions">
         {isEditing ? (
           <>
-            <button className="actionButton" onClick={handleSaveChanges}>
+            <button className="btn btn-primary submit-button" onClick={handleSaveChanges}>
               Guardar cambios
             </button>
-            <button className="actionButton cancelButton" onClick={() => setIsEditing(false)}>
+            <button className="btn btn-default" onClick={() => setIsEditing(false)}>
               Cancelar
             </button>
           </>
         ) : (
-          <button className="actionButton" onClick={() => setIsEditing(true)}>
+          <button className="btn btn-success" onClick={() => setIsEditing(true)}>
             Editar perfil
           </button>
         )}

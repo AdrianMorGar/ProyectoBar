@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import QuantitySelector from '../globlal/QuantitySelector';
 import { createOrder, createOrderDetail, fetchOrders } from '../../../api';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../../context/AuthContext';
 
 interface SelectedDish {
   id: number;
@@ -23,6 +24,7 @@ const AddOrderBar: React.FC = () => {
   const [selectionLocked, setSelectionLocked] = useState<SelectedTable | null>(null);
   const [editingNoteId, setEditingNoteId] = useState<number | null>(null);
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   useEffect(() => {
     const storedOrder = JSON.parse(localStorage.getItem('pedido') || '[]');
@@ -66,6 +68,11 @@ const AddOrderBar: React.FC = () => {
 
   const handlePlaceOrder = async () => {
     try {
+      if (!user) {
+        alert('Error: No se ha podido identificar al usuario. Por favor, inicie sesión de nuevo.');
+        return;
+      }
+
       const mesa = tableNumber.trim();
       const cliente = clientName.trim();
 
@@ -84,7 +91,11 @@ const AddOrderBar: React.FC = () => {
           ((isMesa && order.mesa === Number(value)) || (!isMesa && order.nombreCliente === value))
       );
 
-      const pedidoId = unpaidOrders.length > 0 ? unpaidOrders[0].id : (await createOrder({ mesa: isMesa ? Number(value) : null, nombreCliente: isMesa ? null : value })).id;
+      const pedidoId = unpaidOrders.length > 0 ? unpaidOrders[0].id : (await createOrder({ 
+        mesa: isMesa ? Number(value) : null, 
+        nombreCliente: isMesa ? null : value,
+        usuario_id: user.id 
+      })).id;
 
       for (const dish of selectedDishes) {
         await createOrderDetail({
@@ -118,14 +129,13 @@ const AddOrderBar: React.FC = () => {
   };
 
   return (
-    <div className="add-order-bar">
-      {/* Encabezado */}
+    <div className="add-order-container">
       <div className="header">
         <h1>Pedido Actual</h1>
-        <button className="cancel-button" onClick={handleCancelOrder}>Cancelar Pedido</button>
+        <button className="btn btn-danger cancel-order-button" onClick={handleCancelOrder}>
+          Cancelar Pedido
+        </button>
       </div>
-
-      {/* Selección de Mesa o Nombre */}
       <div className="table-selection">
         <h2>Asignar Mesa o Nombre</h2>
         <div className="input-group">
@@ -152,14 +162,12 @@ const AddOrderBar: React.FC = () => {
             className="input-field"
           />
           {selectionLocked && (
-            <button className="remove-button" onClick={handleRemoveSelection}>
+            <button className="btn btn-warning remove-table-button btn-sm" onClick={handleRemoveSelection}>
               Eliminar
             </button>
           )}
         </div>
       </div>
-
-      {/* Lista de Platos */}
       <div className="dishes-list">
         {selectedDishes.length > 0 ? (
           selectedDishes.map((dish) => (
@@ -180,14 +188,14 @@ const AddOrderBar: React.FC = () => {
                     onChange={(e) => updateNote(dish.id, e.target.value)}
                     className="note-textarea"
                   />
-                  <button className="save-note-button" onClick={() => setEditingNoteId(null)}>
+                  <button className="btn btn-secondary save-note-button btn-sm" onClick={() => setEditingNoteId(null)}>
                     Guardar Nota
                   </button>
                 </div>
               ) : (
                 <>
                   {dish.notas && <p className="note">{dish.notas}</p>}
-                  <button className="edit-note-button" onClick={() => setEditingNoteId(dish.id)}>
+                  <button className="btn btn-link edit-note-button btn-sm" onClick={() => setEditingNoteId(dish.id)}>
                     Editar Nota
                   </button>
                 </>
@@ -201,10 +209,8 @@ const AddOrderBar: React.FC = () => {
           <p className="no-dishes-message">No hay platos seleccionados</p>
         )}
       </div>
-
-      {/* Botón Pedir */}
       {selectedDishes.length > 0 && (tableNumber || clientName.trim()) && (
-        <button className="place-order-button" onClick={handlePlaceOrder}>
+        <button className="btn btn-success place-order-button btn-lg" onClick={handlePlaceOrder}>
           Pedir
         </button>
       )}
