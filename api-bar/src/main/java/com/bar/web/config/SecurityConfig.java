@@ -79,7 +79,7 @@ public class SecurityConfig {
                  .requestMatchers(HttpMethod.GET, "/usuarios", "/usuarios/**").hasRole("DUENO")
                  .requestMatchers(HttpMethod.POST, "/usuarios").hasRole("DUENO")
                  .requestMatchers(HttpMethod.PUT, "/usuarios/**").hasRole("DUENO") // Cubre /usuarios/{id} y /usuarios/{id}/toggle
-                 .requestMatchers(HttpMethod.PUT, "/usuarios/{userId}/password").hasAnyRole("DUENO", "TRABAJADOR")
+                 .requestMatchers(HttpMethod.PUT, "/usuarios/{userId}/password").hasAnyRole("DUENO")
 
 
                  // --- Pedidos ---

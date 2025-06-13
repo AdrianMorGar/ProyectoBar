@@ -15,6 +15,7 @@ import com.bar.services.mappers.DetallePedidoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -137,7 +138,7 @@ public class DetallePedidoService {
 	    List<DetallePedido> detalles = detallePedidoRepository.findAll().stream()
 	        .filter(detalle -> detalle.getEstado() != EstadoPedido.CANCELADO && detalle.getEstado() != EstadoPedido.SERVIDO)
 	        .filter(detalle -> !Categoria.BEBIDA.equals(detalle.getPlato().getCategoria()))
-	        .filter(detalle -> detalle.getPedido() != null && Boolean.FALSE.equals(detalle.getPedido().getPagado())) // excluir pagados
+	        .filter(detalle -> detalle.getPedido() != null && Boolean.FALSE.equals(detalle.getPedido().getPagado()))
 	        .toList();
 
 	    // Agrupar por mesa o nombre del cliente si mesa es null
@@ -151,7 +152,7 @@ public class DetallePedidoService {
 	            }
 	        }));
 
-	    // Ordenar y construir resultado
+	    // Construir resultado con campo auxiliar para ordenar por fecha
 	    List<Map<String, Object>> resultado = new ArrayList<>();
 	    for (Map.Entry<String, List<DetallePedido>> entry : detallesPorIdentificador.entrySet()) {
 	        String identificador = entry.getKey();
@@ -171,11 +172,27 @@ public class DetallePedidoService {
 	        Map<String, Object> mesaConDetalles = new HashMap<>();
 	        mesaConDetalles.put("mesa", identificador);
 	        mesaConDetalles.put("detalles", detallesOrdenados);
+	        mesaConDetalles.put("fechaPedido", detallesLista.stream()
+	            .map(d -> d.getPedido().getFecha())
+	            .min(LocalDateTime::compareTo)
+	            .orElse(LocalDateTime.now())); // Campo auxiliar para ordenar luego
+
 	        resultado.add(mesaConDetalles);
 	    }
 
+	    // Ordenar resultado por fecha del pedido más antiguo en cada grupo
+	    resultado.sort((m1, m2) -> {
+	        LocalDateTime f1 = (LocalDateTime) m1.get("fechaPedido");
+	        LocalDateTime f2 = (LocalDateTime) m2.get("fechaPedido");
+	        return f1.compareTo(f2);
+	    });
+
+	    // Eliminar campo auxiliar
+	    resultado.forEach(m -> m.remove("fechaPedido"));
+
 	    return resultado;
 	}
+
 	
 	public List<Map<String, Object>> listarBebidas() {
 	    List<DetallePedido> detalles = detallePedidoRepository.findAll().stream()

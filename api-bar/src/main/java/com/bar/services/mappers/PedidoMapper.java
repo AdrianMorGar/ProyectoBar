@@ -19,6 +19,10 @@ public class PedidoMapper {
         dto.setMesa(pedido.getMesa());
         dto.setFecha(pedido.getFecha());
         dto.setPagado(pedido.getPagado());
+        
+        if (pedido.getUsuario() != null) {
+            dto.setUsuarioId(pedido.getUsuario().getId());
+        }
 
         double total = 0.0;
         if (pedido.getDetalles() != null) {
@@ -61,6 +65,7 @@ public class PedidoMapper {
         PedidoVentaDTO dto = new PedidoVentaDTO();
         dto.setId(pedido.getId());
 
+        // Total del pedido
         double total = 0.0;
         if (pedido.getDetalles() != null) {
             for (DetallePedido detalle : pedido.getDetalles()) {
@@ -71,6 +76,7 @@ public class PedidoMapper {
         }
         dto.setTotal(total);
 
+        // Detalles individuales
         List<DetalleVentaDTO> detallesDTO = new ArrayList<>();
         if (pedido.getDetalles() != null) {
             for (DetallePedido detalle : pedido.getDetalles()) {
@@ -85,9 +91,18 @@ public class PedidoMapper {
             }
         }
         dto.setDetalles(detallesDTO);
+        dto.setMesa(pedido.getMesa());
+        dto.setNombreCliente(pedido.getNombreCliente());
+
+        if (pedido.getUsuario() != null) {
+            dto.setTrabajador(pedido.getUsuario().getNombre());
+        } else {
+            dto.setTrabajador("Desconocido");
+        }
 
         return dto;
     }
+
 
     public static List<PedidoVentaDTO> toPedidoVentaDTOs(List<Pedido> pedidos) {
         List<PedidoVentaDTO> resultado = new ArrayList<>();

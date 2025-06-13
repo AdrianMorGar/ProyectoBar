@@ -2,8 +2,10 @@ package com.bar.services;
 
 import com.bar.persistence.entities.DetallePedido;
 import com.bar.persistence.entities.Pedido;
+import com.bar.persistence.entities.Usuario; // AÑADIDO
 import com.bar.persistence.entities.enums.EstadoPedido;
 import com.bar.persistence.repositories.PedidoRepository;
+import com.bar.persistence.repositories.UsuarioRepository; // AÑADIDO
 import com.bar.services.dtos.PedidoDTO;
 import com.bar.services.dtos.PedidoVentaDTO;
 import com.bar.services.mappers.PedidoMapper;
@@ -23,6 +25,10 @@ public class PedidoService {
 
 	@Autowired
 	private PedidoRepository pedidoRepository;
+	
+	// AÑADIDO: Inyectamos el repositorio de usuarios para poder buscar al usuario.
+	@Autowired
+	private UsuarioRepository usuarioRepository;
 
 	public List<PedidoDTO> findAll() {
 		return PedidoMapper.toDtos(pedidoRepository.findAll());
@@ -37,11 +43,21 @@ public class PedidoService {
 		return pedido != null ? PedidoMapper.toDto(pedido) : null;
 	}
 
+	// MÉTODO CREATE MODIFICADO
 	public PedidoDTO create(PedidoDTO pedidoDTO) {
 	    Pedido pedido = PedidoMapper.toEntity(pedidoDTO);
-
 	    pedido.setFecha(LocalDateTime.now());
 	    pedido.setPagado(false);
+
+	    // LÓGICA AÑADIDA PARA ASIGNAR EL USUARIO
+	    if (pedidoDTO.getUsuarioId() == null) {
+	        throw new RuntimeException("El ID del usuario es obligatorio para crear un pedido.");
+	    }
+	    
+	    Usuario usuario = usuarioRepository.findById(pedidoDTO.getUsuarioId())
+	        .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + pedidoDTO.getUsuarioId()));
+	    
+	    pedido.setUsuario(usuario); // Asignamos la entidad Usuario completa al pedido.
 
 	    Pedido savedPedido = pedidoRepository.save(pedido);
 	    return PedidoMapper.toDto(savedPedido);
@@ -92,7 +108,6 @@ public class PedidoService {
 
 		List<Pedido> pedidos = pedidoRepository.findByFechaBetween(startOfDay, endOfDay);
 		List<PedidoVentaDTO> pedidosFiltrados = new ArrayList<>();
-
 		for (Pedido pedido : pedidos) {
 			if (pedido.getPagado()) {
 				PedidoVentaDTO dto = PedidoMapper.toPedidoVentaDTO(pedido);
@@ -131,7 +146,6 @@ public class PedidoService {
 
 		List<Pedido> pedidos = pedidoRepository.findByFechaBetween(startDate.atStartOfDay(),
 				endDate.plusDays(1).atStartOfDay());
-
 		for (int month = 1; month <= 12; month++) {
 			double total = 0.0;
 			for (Pedido pedido : pedidos) {
@@ -153,10 +167,8 @@ public class PedidoService {
 	public List<PedidoDTO> findPedidos() {
 	    List<Pedido> pedidos = pedidoRepository.findAll();
 	    List<PedidoDTO> resultado = new ArrayList<>();
-
 	    for (Pedido pedido : pedidos) {
 	        boolean tieneActivos = false;
-
 	        if (pedido.getDetalles() != null) {
 	            for (DetallePedido detalle : pedido.getDetalles()) {
 	                if (detalle.getEstado() != EstadoPedido.CANCELADO) {
@@ -173,5 +185,4 @@ public class PedidoService {
 
 	    return resultado;
 	}
-
 }
