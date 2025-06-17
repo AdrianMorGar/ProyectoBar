@@ -66,8 +66,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const refreshLogin = async (username: string, password: string) => {
     try {
       const response = await axios.post(
-        // 'https://rubber-stesha-adrianmorgar-e368679c.koyeb.app/bar/api/auth/login',
-        'http://localhost:8080/bar/api/auth/login',
+        'https://competitive-lin-adrian-morgar394-0f4897ac.koyeb.app/bar/api/auth/login',
+        // 'http://localhost:8080/bar/api/auth/login',
         { username, password },
         { headers: { 'Content-Type': 'application/json' } }
       );

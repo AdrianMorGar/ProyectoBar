@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
 
-// const API_LOGIN_URL = 'https://rubber-stesha-adrianmorgar-e368679c.koyeb.app/bar/api/auth/login';
-const API_LOGIN_URL = 'http://localhost:8080/bar/api/auth/login';
+const API_LOGIN_URL = 'https://competitive-lin-adrian-morgar394-0f4897ac.koyeb.app/bar/api/auth/login';
+// const API_LOGIN_URL = 'http://localhost:8080/bar/api/auth/login';
 
 
 const LoginForm: React.FC = () => {

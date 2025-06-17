@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// const API_URL = 'https://rubber-stesha-adrianmorgar-e368679c.koyeb.app/bar/api';
-const API_URL = 'http://localhost:8080/bar/api';
+const API_URL = 'https://competitive-lin-adrian-morgar394-0f4897ac.koyeb.app/bar/api';
+// const API_URL = 'http://localhost:8080/bar/api';
 
 // Usuarios
 export const fetchUsers = async () => {
